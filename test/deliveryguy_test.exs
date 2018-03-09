@@ -3,7 +3,11 @@ defmodule DeliveryguyTest do
   doctest Deliveryguy
 
   test "makes a request" do
-    response = Deliveryguy.deliver_route("lib/routes/create-event.json")
-    assert response.status_code == 201
+    {:ok, pid} = GenServer.start_link(Deliveryguy, [])
+
+    Deliveryguy.deliver_route(pid, "lib/routes/create-event.json")
+    state = Deliveryguy.get_state(pid)
+
+    assert state["event"]["id"] != nil
   end
 end
