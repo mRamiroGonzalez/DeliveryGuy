@@ -17,7 +17,7 @@
     },
     "response": {
       "expect": 201,
-      "package": "event"
+      "entityName": "event_1"
     }
   }
 }

@@ -15,7 +15,13 @@ defmodule Deliveryguy do
   end
 
   def deliver_house(pid, houseInfos) do
-    GenServer.call(pid, houseInfos)
+    packageName = houseInfos["response"]["entityName"]
+
+    response = GenServer.call(pid, houseInfos)
+    responsePackage = Poison.decode! response.body
+    add_entity(pid, packageName, responsePackage)
+
+    response.status_code
   end
 
   def add_entity(pid, name, entity) do
@@ -47,13 +53,7 @@ defmodule Deliveryguy do
 
     response = HTTPoison.post! to, body, headers
 
-    packageName = houseInfos["response"]["package"]
-    packagePath = "lib/packages/" <> packageName <> ".json"
-    package = Poison.decode! File.read! packagePath
-    responsePackage = Poison.decode! response.body
-
-    state = Map.put(state, packageName, Map.merge(package, responsePackage))
-    {:reply, response.status_code, state}
+    {:reply, response, state}
   end
 
   def handle_cast(_msg, state) do
