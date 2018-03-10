@@ -8,7 +8,14 @@ defmodule Deliveryguy do
 
   def deliver_route(pid, route) do
     routeMap = Poison.decode! File.read! route
-    GenServer.call(pid, routeMap)
+    Enum.reduce routeMap, [], fn ({_id, houseInfos}, acc) ->
+      code = deliver_house(pid, houseInfos)
+      [code | acc]
+    end
+  end
+
+  def deliver_house(pid, houseInfos) do
+    GenServer.call(pid, houseInfos)
   end
 
   def start_link(state, opts) do
@@ -23,14 +30,14 @@ defmodule Deliveryguy do
     {:reply, state, state}
   end
 
-  def handle_call(route, _from, state) do
-    to = route["request"]["to"]
-    body = Poison.encode! route["request"]["body"]
-    headers = route["request"]["headers"]
+  def handle_call(houseInfos, _from, state) do
+    to = houseInfos["request"]["to"]
+    body = Poison.encode! houseInfos["request"]["body"]
+    headers = houseInfos["request"]["headers"]
 
     response = HTTPoison.post! to, body, headers
 
-    packageName = route["response"]["package"]
+    packageName = houseInfos["response"]["package"]
     packagePath = "lib/packages/" <> packageName <> ".json"
     package = Poison.decode! File.read! packagePath
     responsePackage = Poison.decode! response.body
