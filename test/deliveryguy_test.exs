@@ -20,7 +20,6 @@ defmodule DeliveryguyTest do
     codes = Deliveryguy.deliver_route(pid, "test/routes/create-two-events.json")
     state = Deliveryguy.get_state(pid)
     stateList = Enum.to_list(state)
-    IO.inspect stateList
 
     assert codes == [201, 201]
     assert length(stateList) == 2
