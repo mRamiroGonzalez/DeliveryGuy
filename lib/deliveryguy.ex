@@ -15,11 +15,11 @@ defmodule Deliveryguy do
   end
 
   def deliver_house(pid, houseInfos) do
-    packageName = houseInfos["response"]["entityName"]
+    returnPackageName = houseInfos["response"]["entityName"]
 
     response = GenServer.call(pid, houseInfos)
     responsePackage = Poison.decode! response.body
-    add_entity(pid, packageName, responsePackage)
+    add_entity(pid, returnPackageName, responsePackage)
 
     response.status_code
   end
