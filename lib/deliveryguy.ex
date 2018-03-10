@@ -2,8 +2,10 @@ defmodule Deliveryguy do
 
   use GenServer
 
+
+  # CLIENT
   def get_state(pid) do
-    GenServer.call(pid, :get_state)
+    GenServer.call(pid, %{action: :get_state})
   end
 
   def deliver_route(pid, route) do
@@ -28,6 +30,12 @@ defmodule Deliveryguy do
     GenServer.call(pid, %{action: :add, name: name, entity: entity})
   end
 
+  def get_globals(pid) do
+    GenServer.call(pid, %{action: :get_globals})
+  end
+
+
+  # INIT
   def start_link(state, opts) do
     GenServer.start_link(__MODULE__, state, opts)
   end
@@ -37,13 +45,17 @@ defmodule Deliveryguy do
   end
 
 
-
+  # SERVER
   def handle_call(%{action: :add, name: name, entity: entity}, _from, state) do
     {:reply, :ok, Map.put(state, name, entity)}
   end
 
-  def handle_call(:get_state, _from, state) do
+  def handle_call(%{action: :get_state}, _from, state) do
     {:reply, state, state}
+  end
+
+  def handle_call(%{action: :get_globals}, _from, state) do
+    {:reply, Globals.get_state(state["globalsPid"]), state}
   end
 
   def handle_call(houseInfos, _from, state) do

@@ -34,4 +34,18 @@ defmodule DeliveryguyTest do
 
     assert state["test"] == entity
   end
+
+  test "adds globals variables to a runner" do
+    {:ok, globalsPid} = GenServer.start_link(Globals, [])
+    {:ok, deliveryPid} = GenServer.start_link(Deliveryguy, [])
+
+    key = "key"
+    value = "value"
+
+    Deliveryguy.add_entity(deliveryPid, "globalsPid", globalsPid)
+    Globals.add_value(globalsPid, key, value)
+    globals = Deliveryguy.get_globals(deliveryPid)
+
+    assert globals[key] == value
+  end
 end
