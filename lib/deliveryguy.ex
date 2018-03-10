@@ -18,12 +18,22 @@ defmodule Deliveryguy do
     GenServer.call(pid, houseInfos)
   end
 
+  def add_entity(pid, name, entity) do
+    GenServer.call(pid, %{action: :add, name: name, entity: entity})
+  end
+
   def start_link(state, opts) do
     GenServer.start_link(__MODULE__, state, opts)
   end
 
   def init(_opts) do
     {:ok, %{}}
+  end
+
+
+
+  def handle_call(%{action: :add, name: name, entity: entity}, _from, state) do
+    {:reply, :ok, Map.put(state, name, entity)}
   end
 
   def handle_call(:get_state, _from, state) do

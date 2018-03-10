@@ -19,4 +19,12 @@ defmodule DeliveryguyTest do
     codes = Deliveryguy.deliver_route(pid, "test/routes/create-two-events.json")
     assert codes == [201, 201]
   end
+
+  test "adds an entity" do
+    {:ok, pid} = GenServer.start_link(Deliveryguy, [])
+    entity = %{"aze": 1}
+    Deliveryguy.add_entity(pid, "test", entity)
+    state = Deliveryguy.get_state(pid)
+    assert state["test"] == entity
+  end
 end
