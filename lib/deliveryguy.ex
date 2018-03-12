@@ -71,9 +71,9 @@ defmodule Deliveryguy do
     to = houseInfos["request"]["to"]
     body = Poison.encode! houseInfos["request"]["body"]
     headers = houseInfos["request"]["headers"]
+    method = houseInfos["request"]["method"] |> String.downcase |> String.to_atom
 
-    response = HTTPoison.post! to, body, headers
-
+    response = HTTPoison.request!(method, to, body, headers)
     {:reply, response, state}
   end
 

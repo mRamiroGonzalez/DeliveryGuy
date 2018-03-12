@@ -6,7 +6,7 @@ defmodule DeliveryguyTest do
     {:ok, pid} = GenServer.start_link(Deliveryguy, [])
 
     routeInfos = Poison.decode! File.read! "test/routes/create-event.json"
-    houseInfos = routeInfos["1"]
+    houseInfos = List.first routeInfos["sync"]
     responseCode = Deliveryguy.deliver_house(pid, houseInfos)
     state = Deliveryguy.get_state(pid)
 
