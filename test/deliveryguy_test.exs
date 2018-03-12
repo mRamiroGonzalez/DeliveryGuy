@@ -2,22 +2,26 @@ defmodule DeliveryguyTest do
   use ExUnit.Case
   doctest Deliveryguy
 
-  test "delivers a house" do
+  test "make a POST request" do
     {:ok, pid} = GenServer.start_link(Deliveryguy, [])
+    filename = "test/routes/create-event.json"
 
-    routeInfos = Poison.decode! File.read! "test/routes/create-event.json"
+    routeInfos = Poison.decode! File.read! filename
     houseInfos = List.first routeInfos["sync"]
+    responseType = houseInfos["response"]["entityName"]
+
     responseCode = Deliveryguy.deliver_house(pid, houseInfos)
     state = Deliveryguy.get_state(pid)
 
-    assert state["event_1"]["id"] != nil
+    assert state[responseType] != nil
     assert responseCode == 201
   end
 
-  test "delivers multiple houses" do
+  test "make multiple POST requests" do
     {:ok, pid} = GenServer.start_link(Deliveryguy, [])
+    filename = "test/routes/create-two-events.json"
 
-    codes = Deliveryguy.deliver_route(pid, "test/routes/create-two-events.json")
+    codes = Deliveryguy.deliver_route(pid, filename)
     state = Deliveryguy.get_state(pid)
     stateList = Enum.to_list(state)
 
@@ -25,15 +29,30 @@ defmodule DeliveryguyTest do
     assert length(stateList) == 2
   end
 
-  test "delivers multiple houses async" do
+  test "make multiple POST request async" do
     {:ok, pid} = GenServer.start_link(Deliveryguy, [])
+    filename = "test/routes/create-two-events-async.json"
 
-    codes = Deliveryguy.deliver_route_async(pid, "test/routes/create-two-events-async.json")
+    codes = Deliveryguy.deliver_route_async(pid, filename)
     state = Deliveryguy.get_state(pid)
     stateList = Enum.to_list(state)
 
     assert codes == [201, 201]
     assert length(stateList) == 2
+  end
+
+  test "make a GET request" do
+    {:ok, pid} = GenServer.start_link(Deliveryguy, [])
+    filename = "test/routes/get-all-events.json"
+
+    routeInfos = Poison.decode! File.read! filename
+    responseType = List.first(routeInfos["sync"])["response"]["entityName"]
+
+    codes = Deliveryguy.deliver_route(pid, filename)
+    state = Deliveryguy.get_state(pid)
+
+    assert codes == [200]
+    assert length(state[responseType]) > 0
   end
 
   test "adds an entity" do

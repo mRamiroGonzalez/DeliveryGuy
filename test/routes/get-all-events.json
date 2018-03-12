@@ -1,0 +1,19 @@
+{
+  "sync":
+  [
+    {
+      "request": {
+        "method": "GET",
+        "to": "http://10.10.0.18:8080/main/api/visio/internal/events",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIxNDAzMjUiLCJzdWIiOiJhZG1pbjIwNTlfdmlzaW9AZW1haWwuY29tIiwiYXV0aCI6IlJPTEVfVVNFUixST0xFX0FETUlOIiwiZXhwIjoxNjA3MDI2NzE2fQ.7bCyCB4CgKbZKiJVv_ByxZadiD8j5vyZ1JgcJ8xro3GF-epZHL-g4ZFUdPjr0rWaAxuGjmX2ZFKxlIpudH8XwA"
+        }
+      },
+      "response": {
+        "expect": 200,
+        "entityName": "events"
+      }
+    }
+  ]
+}
