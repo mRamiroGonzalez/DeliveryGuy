@@ -11,7 +11,7 @@ defmodule Deliveryguy do
   def deliver_route(pid, route) do
     routeMap = Poison.decode! File.read! route
 
-    Enum.reduce routeMap, [], fn ({_id, houseInfos}, acc) ->
+    Enum.reduce routeMap["sync"], [], fn (houseInfos, acc) ->
       code = deliver_house(pid, houseInfos)
       [code | acc]
     end
@@ -21,9 +21,7 @@ defmodule Deliveryguy do
     routeMap = Poison.decode! File.read! route
 
     routeMap["async"]
-    |> Enum.map(&Task.async(fn ->
-      deliver_house(pid, &1)
-    end))
+    |> Enum.map(&Task.async(fn -> deliver_house(pid, &1) end))
     |> Enum.map(&Task.await/1)
   end
 
