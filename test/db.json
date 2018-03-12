@@ -1,0 +1,40 @@
+{
+  "events": [
+    {
+      "type": "FIRST_EVENT",
+      "startDate": "2030-01-01T01:00Z[UTC]",
+      "endDate": "2030-01-01T03:00Z[UTC]",
+      "id": 1
+    },
+    {
+      "type": "EVENT",
+      "startDate": "2030-01-01T00:00Z[UTC]",
+      "endDate": "2030-01-01T23:59Z[UTC]",
+      "id": 2
+    },
+    {
+      "type": "ANOTHER_EVENT",
+      "startDate": "2030-01-01T01:00Z[UTC]",
+      "endDate": "2030-01-01T03:00Z[UTC]",
+      "id": 3
+    },
+    {
+      "type": "EVENT",
+      "startDate": "2030-01-01T00:00Z[UTC]",
+      "endDate": "2030-01-01T23:59Z[UTC]",
+      "id": 4
+    },
+    {
+      "type": "ANOTHER_EVENT",
+      "startDate": "2030-01-01T01:00Z[UTC]",
+      "endDate": "2030-01-01T03:00Z[UTC]",
+      "id": 5
+    },
+    {
+      "type": "EVENT",
+      "startDate": "2030-01-01T00:00Z[UTC]",
+      "endDate": "2030-01-01T23:59Z[UTC]",
+      "id": 6
+    }
+  ]
+}

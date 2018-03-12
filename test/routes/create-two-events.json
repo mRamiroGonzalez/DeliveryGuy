@@ -4,13 +4,13 @@
     {
       "request": {
         "method": "POST",
-        "to": "http://10.10.0.18:8080/main/api/visio/internal/events",
+        "to": "http://localhost:3000/events",
         "headers": {
           "Content-Type": "application/json",
-          "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIxNDAzMjUiLCJzdWIiOiJhZG1pbjIwNTlfdmlzaW9AZW1haWwuY29tIiwiYXV0aCI6IlJPTEVfVVNFUixST0xFX0FETUlOIiwiZXhwIjoxNjA3MDI2NzE2fQ.7bCyCB4CgKbZKiJVv_ByxZadiD8j5vyZ1JgcJ8xro3GF-epZHL-g4ZFUdPjr0rWaAxuGjmX2ZFKxlIpudH8XwA"
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXNzYWdlIjoiWW91IGp1c3QgbG9zdCBUaGUgR2FtZS4ifQ.0EMiiJY3saBQNFap35d4ZeW4ZRYLVZnn4HNftomn4js"
         },
         "body": {
-          "type": "ET_AVAILABILITY",
+          "type": "EVENT",
           "startDate": "2030-01-01T00:00Z[UTC]",
           "endDate": "2030-01-01T23:59Z[UTC]"
         }
@@ -23,13 +23,13 @@
     {
       "request": {
         "method": "POST",
-        "to": "http://10.10.0.18:8080/main/api/visio/internal/events",
+        "to": "http://localhost:3000/events",
         "headers": {
           "Content-Type": "application/json",
-          "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIxNDAzMjUiLCJzdWIiOiJhZG1pbjIwNTlfdmlzaW9AZW1haWwuY29tIiwiYXV0aCI6IlJPTEVfVVNFUixST0xFX0FETUlOIiwiZXhwIjoxNjA3MDI2NzE2fQ.7bCyCB4CgKbZKiJVv_ByxZadiD8j5vyZ1JgcJ8xro3GF-epZHL-g4ZFUdPjr0rWaAxuGjmX2ZFKxlIpudH8XwA"
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXNzYWdlIjoiWW91IGp1c3QgbG9zdCBUaGUgR2FtZS4ifQ.0EMiiJY3saBQNFap35d4ZeW4ZRYLVZnn4HNftomn4js"
         },
         "body": {
-          "type": "ET_COURSE",
+          "type": "ANOTHER_EVENT",
           "startDate": "2030-01-01T01:00Z[UTC]",
           "endDate": "2030-01-01T03:00Z[UTC]"
         }

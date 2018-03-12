@@ -2,6 +2,21 @@ defmodule DeliveryguyTest do
   use ExUnit.Case
   doctest Deliveryguy
 
+  setup_all do
+    filename = "test/db.json"
+    emptydb = "{\"events\": [
+                  {
+                    \"type\": \"FIRST_EVENT\",
+                    \"startDate\": \"2030-01-01T01:00Z[UTC]\",
+                    \"endDate\": \"2030-01-01T03:00Z[UTC]\",
+                    \"id\": 1
+                  }
+              ]}"
+    {:ok, file} = File.open(filename, [:write])
+    IO.write(file, emptydb)
+    File.close(file)
+  end
+
   test "make a POST request" do
     {:ok, pid} = GenServer.start_link(Deliveryguy, [])
     filename = "test/routes/create-event.json"
