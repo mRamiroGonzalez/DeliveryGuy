@@ -1,9 +1,7 @@
 {
   "1": {
-    "waitFor": 0,
     "request": {
-      "packageType": "event",
-      "type": "POST",
+      "method": "POST",
       "to": "http://10.10.0.18:8080/main/api/visio/internal/events",
       "headers": {
         "Content-Type": "application/json",
