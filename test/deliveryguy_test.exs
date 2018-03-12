@@ -25,6 +25,17 @@ defmodule DeliveryguyTest do
     assert length(stateList) == 2
   end
 
+  test "delivers multiple houses async" do
+    {:ok, pid} = GenServer.start_link(Deliveryguy, [])
+
+    codes = Deliveryguy.deliver_route_async(pid, "test/routes/create-two-events-async.json")
+    state = Deliveryguy.get_state(pid)
+    stateList = Enum.to_list(state)
+
+    assert codes == [201, 201]
+    assert length(stateList) == 2
+  end
+
   test "adds an entity" do
     {:ok, pid} = GenServer.start_link(Deliveryguy, [])
 
