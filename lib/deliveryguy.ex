@@ -8,23 +8,6 @@ defmodule Deliveryguy do
     GenServer.call(pid, %{action: :get_state})
   end
 
-  def deliver_route(pid, route) do
-    routeMap = Poison.decode! File.read! route
-
-    Enum.reduce routeMap["sync"], [], fn (houseInfos, acc) ->
-      code = deliver_house(pid, houseInfos)
-      [code | acc]
-    end
-  end
-
-  def deliver_route_async(pid, route) do
-    routeMap = Poison.decode! File.read! route
-
-    routeMap["async"]
-    |> Enum.map(&Task.async(fn -> deliver_house(pid, &1) end))
-    |> Enum.map(&Task.await/1)
-  end
-
   def deliver_house(pid, houseInfos) do
     entityName = houseInfos["response"]["entityName"]
 
@@ -84,9 +67,4 @@ defmodule Deliveryguy do
     response = HTTPoison.request!(method, to, body, headers)
     {:reply, response, state}
   end
-
-  def handle_cast(_msg, state) do
-    {:noreply, state}
-  end
-
 end
