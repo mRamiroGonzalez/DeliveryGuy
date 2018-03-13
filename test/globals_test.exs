@@ -1,7 +1,7 @@
 defmodule GlobalsTest do
   use ExUnit.Case
 
-  test "add global variables" do
+  test "add_global_variable" do
     {:ok, pid} = GenServer.start_link(Globals, [])
 
     key = "var"
