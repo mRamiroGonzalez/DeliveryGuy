@@ -1,17 +1,20 @@
 defmodule Dispatcher do
 
   def process_routes(routes) do
-    routesMap = routes |> File.read! |> Poison.decode!
-    codes = Enum.reduce routesMap, [], fn ({_id, route}, acc) ->
-      codes = cond do
-        Map.has_key?(route, "async") ->
-          deliver_route_async(route)
-        Map.has_key?(route, "sync") ->
-          deliver_route(route)
-      end
-      [acc | codes]
-    end
-    List.flatten(codes)
+    routes
+      |> File.read!
+      |> Poison.decode!
+      |> Enum.reduce([], fn ({_id, route}, acc) ->
+          codes =
+            cond do
+              Map.has_key?(route, "async") ->
+                deliver_route_async(route)
+              true ->
+                deliver_route(route)
+              end
+          [acc | codes]
+        end)
+      |> List.flatten
   end
 
   def deliver_route(route) do
