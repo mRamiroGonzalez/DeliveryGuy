@@ -13,9 +13,7 @@ defmodule DeliveryguyTest do
                     \"id\": 1
                   }
               ]}"
-    {:ok, file} = File.open(filename, [:write])
-    IO.write(file, emptydb)
-    File.close(file)
+    File.write(filename, emptydb)
   end
 
   test "make a POST request" do
