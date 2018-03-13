@@ -26,13 +26,21 @@ defmodule Deliveryguy do
   end
 
   def deliver_house(pid, houseInfos) do
-    returnPackageName = houseInfos["response"]["entityName"]
+    entityName = houseInfos["response"]["entityName"]
 
     response = GenServer.call(pid, houseInfos)
-    responsePackage = Poison.decode! response.body
-    add_entity(pid, returnPackageName, responsePackage)
+    responseBody = Poison.decode! response.body
+    if(validateResponse(houseInfos, response)) do
+      add_entity(pid, entityName, responseBody)
+    end
 
     response.status_code
+  end
+
+  def validateResponse(houseInfos, response) do
+    expectation = houseInfos["response"]["expect"]
+    response = response.status_code
+    expectation == response
   end
 
   def add_entity(pid, name, entity) do

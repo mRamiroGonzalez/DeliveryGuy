@@ -3,6 +3,7 @@ defmodule DeliveryguyTest do
   doctest Deliveryguy
 
   setup_all do
+    # > json-server --watch db.json
     filename = "test/db.json"
     emptydb = "{\"events\": [
                   {
@@ -92,5 +93,28 @@ defmodule DeliveryguyTest do
     globals = Deliveryguy.get_globals(deliveryPid)
 
     assert globals[key] == value
+  end
+
+  test "matches the return value with the expectation" do
+    {:ok, _pid} = GenServer.start_link(Deliveryguy, [])
+    filename = "test/routes/create-event.json"
+
+    routeInfos = Poison.decode! File.read! filename
+    houseInfos = List.first routeInfos["sync"]
+
+    response = Map.put(%{}, :status_code, 201)
+    result = Deliveryguy.validateResponse(houseInfos, response)
+
+    assert result == true
+  end
+
+  test "does not save the entity because the validation is not ok" do
+    {:ok, pid} = GenServer.start_link(Deliveryguy, [])
+    filename = "test/routes/create-event-fail.json"
+
+    Deliveryguy.deliver_route(pid, filename)
+    state = Deliveryguy.get_state(pid)
+
+    assert state == %{}
   end
 end
