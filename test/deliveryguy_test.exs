@@ -2,20 +2,6 @@ defmodule DeliveryguyTest do
   use ExUnit.Case
   doctest Deliveryguy
 
-  setup_all do
-    # > json-server --watch db.json
-    filename = "test/db.json"
-    emptydb = "{\"events\": [
-                  {
-                    \"type\": \"FIRST_EVENT\",
-                    \"startDate\": \"2030-01-01T01:00Z[UTC]\",
-                    \"endDate\": \"2030-01-01T03:00Z[UTC]\",
-                    \"id\": 1
-                  }
-              ]}"
-    File.write(filename, emptydb)
-  end
-
   test "make a POST request" do
     {:ok, pid} = GenServer.start_link(Deliveryguy, [])
     filename = "test/routes/create-event.json"
@@ -31,45 +17,22 @@ defmodule DeliveryguyTest do
     assert responseCode == 201
   end
 
-  test "make multiple POST requests" do
-    {:ok, pid} = GenServer.start_link(Deliveryguy, [])
-    filename = "test/routes/create-two-events.json"
-
-    codes = Deliveryguy.deliver_route(pid, filename)
-    state = Deliveryguy.get_state(pid)
-    stateList = Enum.to_list(state)
-
-    assert codes == [201, 201]
-    assert length(stateList) == 2
-  end
-
-  test "make multiple POST request async" do
-    {:ok, pid} = GenServer.start_link(Deliveryguy, [])
-    filename = "test/routes/create-two-events-async.json"
-
-    codes = Deliveryguy.deliver_route_async(pid, filename)
-    state = Deliveryguy.get_state(pid)
-    stateList = Enum.to_list(state)
-
-    assert codes == [201, 201]
-    assert length(stateList) == 2
-  end
-
   test "make a GET request" do
     {:ok, pid} = GenServer.start_link(Deliveryguy, [])
     filename = "test/routes/get-all-events.json"
 
     routeInfos = Poison.decode! File.read! filename
+    houseInfos = List.first routeInfos["sync"]
     responseType = List.first(routeInfos["sync"])["response"]["entityName"]
 
-    codes = Deliveryguy.deliver_route(pid, filename)
+    statusCode = Deliveryguy.deliver_house(pid, houseInfos)
     state = Deliveryguy.get_state(pid)
 
-    assert codes == [200]
+    assert statusCode == 200
     assert length(state[responseType]) > 0
   end
 
-  test "adds an entity" do
+  test "adds an entity to the state" do
     {:ok, pid} = GenServer.start_link(Deliveryguy, [])
 
     entity = %{"aze": 1}
@@ -77,20 +40,6 @@ defmodule DeliveryguyTest do
     state = Deliveryguy.get_state(pid)
 
     assert state["test"] == entity
-  end
-
-  test "adds globals variables to a runner" do
-    {:ok, globalsPid} = GenServer.start_link(Globals, [])
-    {:ok, deliveryPid} = GenServer.start_link(Deliveryguy, [])
-
-    key = "key"
-    value = "value"
-
-    Deliveryguy.add_entity(deliveryPid, "globalsPid", globalsPid)
-    Globals.add_value(globalsPid, key, value)
-    globals = Deliveryguy.get_globals(deliveryPid)
-
-    assert globals[key] == value
   end
 
   test "matches the return value with the expectation" do
@@ -110,7 +59,10 @@ defmodule DeliveryguyTest do
     {:ok, pid} = GenServer.start_link(Deliveryguy, [])
     filename = "test/routes/create-event-fail.json"
 
-    Deliveryguy.deliver_route(pid, filename)
+    routeInfos = Poison.decode! File.read! filename
+    houseInfos = List.first routeInfos["sync"]
+
+    Deliveryguy.deliver_house(pid, houseInfos)
     state = Deliveryguy.get_state(pid)
 
     assert state == %{}
