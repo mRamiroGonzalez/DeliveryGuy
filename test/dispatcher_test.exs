@@ -23,7 +23,7 @@ defmodule DispatcherTest do
     filename = "test/routes/multiple-steps-requests.json"
     codes = Dispatcher.process_routes(filename)
 
-    assert codes == [201, 201, 200, 201, 201, 201, 201]
+    assert codes == [404, 201, 200, 201, 201, 201, 201]
   end
 
 end
