@@ -16,7 +16,9 @@ defmodule Deliveryguy do
 
     if(Validator.validateStatusCode(houseInfos, response)) do
       entityName = houseInfos["response"]["entityName"]
-      add_entity(pid, entityName, responseBody)
+      if(entityName != nil) do
+        add_entity(pid, entityName, responseBody)
+      end
     end
 
     response.status_code
@@ -31,8 +33,7 @@ defmodule Deliveryguy do
   end
 
   defp replace_entities_from_state(houseInfosJson, state) do
-    Enum.reduce(state, houseInfosJson, fn (entity, _acc) ->
-      {name, data} = entity
+    Enum.reduce(state, houseInfosJson, fn ({name, data}, _acc) ->
       encodedEntity = Poison.encode!(data)
       toReplace = "\"{{" <> name <> "}}\""
       String.replace(houseInfosJson, toReplace, encodedEntity)
