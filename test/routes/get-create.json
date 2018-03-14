@@ -1,0 +1,29 @@
+{
+  "sync":
+  [
+    {
+      "request": {
+        "method": "GET",
+        "to": "http://localhost:3000/events/1"
+      },
+      "response": {
+        "expect": 200,
+        "entityName": "event"
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "to": "http://localhost:3000/events/1",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{{event}}"
+      },
+      "response": {
+        "expect": 200,
+        "entityName": "updatedEvent"
+      }
+    }
+  ]
+}

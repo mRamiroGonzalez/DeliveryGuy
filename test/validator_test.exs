@@ -13,7 +13,7 @@ defmodule ValidatorTest do
 
     response = %{status_code: 201}
 
-    result = Validator.validateResponse(houseInfos, response)
+    result = Validator.validateStatusCode(houseInfos, response)
 
     assert result == true
   end
@@ -30,7 +30,7 @@ defmodule ValidatorTest do
 
     response = %{status_code: 200}
 
-    result = Validator.validateResponse(houseInfos, response)
+    result = Validator.validateStatusCode(houseInfos, response)
 
     assert result == false
   end

@@ -9,11 +9,13 @@ defmodule Deliveryguy do
   end
 
   def deliver_house(pid, houseInfos) do
-    entityName = houseInfos["response"]["entityName"]
+    houseInfos = replace_entities_from_state(Poison.encode!(houseInfos), get_state(pid))
 
     response = GenServer.call(pid, houseInfos)
     responseBody = Poison.decode! response.body
-    if(Validator.validateResponse(houseInfos, response)) do
+
+    if(Validator.validateStatusCode(houseInfos, response)) do
+      entityName = houseInfos["response"]["entityName"]
       add_entity(pid, entityName, responseBody)
     end
 
@@ -26,6 +28,16 @@ defmodule Deliveryguy do
 
   def get_globals(pid) do
     GenServer.call(pid, %{action: :get_globals})
+  end
+
+  defp replace_entities_from_state(houseInfosJson, state) do
+    Enum.reduce(state, houseInfosJson, fn (entity, _acc) ->
+      {name, data} = entity
+      encodedEntity = Poison.encode!(data)
+      toReplace = "\"{{" <> name <> "}}\""
+      String.replace(houseInfosJson, toReplace, encodedEntity)
+    end)
+    |> Poison.decode!
   end
 
 
@@ -54,8 +66,8 @@ defmodule Deliveryguy do
 
   def handle_call(houseInfos, _from, state) do
     to = houseInfos["request"]["to"]
-    body = Poison.encode! houseInfos["request"]["body"]
-    headers = houseInfos["request"]["headers"]
+    body = houseInfos["request"]["body"] |> Poison.encode!
+    headers = houseInfos["request"]["headers"] || []
     method = houseInfos["request"]["method"] |> String.downcase |> String.to_atom
 
     response = HTTPoison.request!(method, to, body, headers)
