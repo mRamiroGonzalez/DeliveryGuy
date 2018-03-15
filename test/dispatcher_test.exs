@@ -26,13 +26,22 @@ defmodule DispatcherTest do
     assert codes == [404, 201, 200, 201, 201, 201, 201]
   end
 
-  test "request chain with value interpolation" do
+  test "request chain with whole value interpolation" do
     filename = "test/routes/get-create.json"
     routesMap = filename |> File.read! |> Poison.decode!
 
     codes = Dispatcher.deliver_route(routesMap)
 
     assert codes == [200, 200]
+  end
+
+  test "request chain with value field interpolation" do
+    filename = "test/routes/get-create-save-field.json"
+    routesMap = filename |> File.read! |> Poison.decode!
+
+    codes = Dispatcher.deliver_route(routesMap)
+
+    assert codes == [200, 200, 200]
   end
 
 end

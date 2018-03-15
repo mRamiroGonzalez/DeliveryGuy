@@ -9,7 +9,7 @@ defmodule Deliveryguy do
   end
 
   def deliver_house(pid, houseInfos) do
-    houseInfos = replace_entities_from_state(Poison.encode!(houseInfos), get_state(pid))
+    houseInfos = replace_entities_from_state(houseInfos, get_state(pid))
 
     response = GenServer.call(pid, houseInfos)
     responseBody = Poison.decode! response.body
@@ -32,11 +32,27 @@ defmodule Deliveryguy do
     GenServer.call(pid, %{action: :get_globals})
   end
 
-  defp replace_entities_from_state(houseInfosJson, state) do
-    Enum.reduce(state, houseInfosJson, fn ({name, data}, _acc) ->
-      encodedEntity = Poison.encode!(data)
-      toReplace = "\"{{" <> name <> "}}\""
-      String.replace(houseInfosJson, toReplace, encodedEntity)
+  defp replace_entities_from_state(requestInfos, state) do
+    requestInfosJson = Poison.encode!(requestInfos)                                   # (...) http://localhost:3000/events/{{event.id}} (...)
+    toBeReplaced = Regex.scan(~r/\{\{(.*?)\}\}/, requestInfosJson)                    # [ ["{{event.id}}", "event.id"], (...) ]
+
+    Enum.reduce(toBeReplaced, requestInfosJson, fn(replaceKey, updatedInfosJson) ->   # ["{{event.id}}", "event.id"]
+      replaceKeyString   = replaceKey |> Enum.at(0)                                   # "{{event.id}}"
+      replaceKeySequence = replaceKey |> Enum.at(1) |> String.split(".")              # ["event", "id"]
+
+      newValue =
+        Enum.reduce(replaceKeySequence, state, fn(key, currentMap) ->
+          Map.get(currentMap, key)
+        end)
+
+      if(is_map(newValue)) do
+        encoded = Poison.encode!(newValue)
+        toReplace = "\"" <> replaceKeyString <> "\""
+        String.replace(updatedInfosJson, toReplace, encoded)
+      else
+        String.replace(updatedInfosJson, replaceKeyString, "#{newValue}")
+      end
+
     end)
     |> Poison.decode!
   end
