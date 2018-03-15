@@ -40,23 +40,22 @@ defmodule Deliveryguy do
       replaceKeyString   = replaceKey |> Enum.at(0)                                   # "{{event.id}}"
       replaceKeySequence = replaceKey |> Enum.at(1) |> String.split(".")              # ["event", "id"]
 
-      newValue =
-        Enum.reduce(replaceKeySequence, state, fn(key, currentMap) ->
-          Map.get(currentMap, key)
-        end)
-
-      if(is_map(newValue)) do
-        encoded = Poison.encode!(newValue)
-        toReplace = "\"" <> replaceKeyString <> "\""
-        String.replace(updatedInfosJson, toReplace, encoded)
-      else
-        String.replace(updatedInfosJson, replaceKeyString, "#{newValue}")
-      end
-
+      newValue = get_value_from_nested_map(replaceKeySequence, state)                 # get entity value in state
+      update_infos(updatedInfosJson, replaceKeyString, newValue)                      # and put it in the request
     end)
     |> Poison.decode!
   end
 
+  defp update_infos(requestInfosJson, key, value) when is_map(value) do
+    encoded = Poison.encode!(value)
+    toReplace = "\"" <> key <> "\""
+    String.replace(requestInfosJson, toReplace, encoded)
+  end
+  defp update_infos(requestInfosJson, key, value), do: String.replace(requestInfosJson, key, "#{value}")
+
+  defp get_value_from_nested_map(keys, map) do
+    Enum.reduce(keys, map, fn(key, currentMap) -> Map.get(currentMap, key) end)
+  end
 
   # INIT
   def start_link(state, opts) do
