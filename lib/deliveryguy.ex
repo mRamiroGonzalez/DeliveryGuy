@@ -2,6 +2,7 @@ defmodule Deliveryguy do
 
   use GenServer
 
+  @m __MODULE__
 
   # CLIENT
   def get_state(pid) do
@@ -44,6 +45,8 @@ defmodule Deliveryguy do
 
   # SERVER
   def handle_call(%{action: :add, name: name, entity: entity}, _from, state) do
+    Log.info(@m, "adding entity: #{name}")
+    Log.debug(@m, "entity: #{inspect entity}")
     {:reply, :ok, Map.put(state, name, entity)}
   end
 
@@ -61,7 +64,9 @@ defmodule Deliveryguy do
     headers = houseInfos["request"]["headers"] || []
     method = houseInfos["request"]["method"] |> String.downcase |> String.to_atom
 
+    Log.info(@m, "#{method} request to #{to}")
     response = HTTPoison.request!(method, to, body, headers)
+    Log.info(@m, "response code: #{response.status_code}")
     {:reply, response, state}
   end
 end

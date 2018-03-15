@@ -1,15 +1,19 @@
 defmodule Dispatcher do
 
+  @m __MODULE__
+
   def process_routes(routes) do
     routes
       |> File.read!
       |> Poison.decode!
-      |> Enum.reduce([], fn ({_id, route}, acc) ->
+      |> Enum.reduce([], fn ({id, route}, acc) ->
           codes =
             cond do
               Map.has_key?(route, "async") ->
+                Log.info(@m, "Starting Async route: #{id}")
                 deliver_route_async(route)
               true ->
+                Log.info(@m, "Starting Sync route: #{id}")
                 deliver_route(route)
               end
           [acc | codes]
