@@ -18,10 +18,12 @@ defmodule Dispatcher do
   end
 
   defp response({opts, _word}) do
-    cond do
-      opts[:source] -> process_routes(opts[:source])
-      true -> "Command not supported"
-    end
+    result =
+      cond do
+        opts[:source] -> process_routes(opts[:source])
+        true -> "Command not supported"
+      end
+    if (result), do: 1, else: 0
   end
 
   def process_routes(routes) do
@@ -41,6 +43,7 @@ defmodule Dispatcher do
           [acc | codes]
         end)
       |> List.flatten
+      |> Enum.all?(fn (x) -> x == :true end)
   end
 
   def deliver_route(route) do

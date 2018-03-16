@@ -20,9 +20,10 @@ defmodule Deliveryguy do
       if(entityName != nil) do
         add_entity(pid, entityName, responseBody)
       end
+      :true
+    else
+      :false
     end
-
-    response.status_code
   end
 
   def add_entity(pid, name, entity) do

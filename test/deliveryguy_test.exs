@@ -10,11 +10,11 @@ defmodule DeliveryguyTest do
     houseInfos = List.first routeInfos["sync"]
     responseType = houseInfos["response"]["entityName"]
 
-    responseCode = Deliveryguy.deliver_house(pid, houseInfos)
+    success = Deliveryguy.deliver_house(pid, houseInfos)
     state = Deliveryguy.get_state(pid)
 
     assert state[responseType] != nil
-    assert responseCode == 201
+    assert success
   end
 
   test "request_get" do
@@ -25,10 +25,10 @@ defmodule DeliveryguyTest do
     houseInfos = List.first routeInfos["sync"]
     responseType = List.first(routeInfos["sync"])["response"]["entityName"]
 
-    statusCode = Deliveryguy.deliver_house(pid, houseInfos)
+    success = Deliveryguy.deliver_house(pid, houseInfos)
     state = Deliveryguy.get_state(pid)
 
-    assert statusCode == 200
+    assert success
     assert length(state[responseType]) > 0
   end
 
@@ -49,9 +49,10 @@ defmodule DeliveryguyTest do
     routeInfos = Poison.decode! File.read! filename
     houseInfos = List.first routeInfos["sync"]
 
-    Deliveryguy.deliver_house(pid, houseInfos)
+    success = Deliveryguy.deliver_house(pid, houseInfos)
     state = Deliveryguy.get_state(pid)
 
     assert state == %{}
+    assert not success
   end
 end
