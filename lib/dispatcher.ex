@@ -2,6 +2,28 @@ defmodule Dispatcher do
 
   @m __MODULE__
 
+  def main(args \\ []) do
+    args                    # mix escript.build
+    |> parse_args           # ./deliveryguy --source "test/routes/multiple-steps-requests.json"
+    |> response
+    |> IO.puts()
+  end
+
+  defp parse_args(args) do
+    {opts, word, _} =
+      args
+      |> OptionParser.parse(switches: [source: :string])
+
+    {opts, List.to_string(word)}
+  end
+
+  defp response({opts, _word}) do
+    cond do
+      opts[:source] -> process_routes(opts[:source])
+      true -> "Command not supported"
+    end
+  end
+
   def process_routes(routes) do
     routes
       |> File.read!
