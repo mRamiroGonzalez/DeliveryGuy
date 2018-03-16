@@ -21,7 +21,9 @@ defmodule Dispatcher do
     result =
       cond do
         opts[:source] -> process_routes(opts[:source])
-        true -> "Command not supported"
+        true ->
+          IO.puts "Command not supported"
+          :false
       end
     if (result), do: 1, else: 0
   end
