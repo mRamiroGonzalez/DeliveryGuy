@@ -1,7 +1,6 @@
 # DeliveryGuy
 
-Makes requests based on a JSON file. See [these examples](exampleRequests).
-The request can either be synchronous or asynchronous.
+Makes requests based on a JSON file. See my blog page [here](https://mramirogonzalez.github.io/Using-DeliveryGuy/) for more infos.
 
 Returns 1 when all the expected response codes match.
 
@@ -28,3 +27,4 @@ json-server --watch test/db.json
 - add tests with failure cases
 - add more ways to validate the response (only response code now)
 - handle timeout when the server does not respond
+- share entities between request groups
