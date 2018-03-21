@@ -6,7 +6,11 @@ defmodule Validator do
   end
 
   def print_feedback(requestInfos, response, valid) do
-    "#{requestInfos["request"]["method"]} #{requestInfos["request"]["to"]}"
+    if (requestInfos["name"] != nil) do
+      "#{requestInfos["name"]}"
+    else
+      "#{requestInfos["request"]["method"]} #{requestInfos["request"]["to"]}"
+    end
     <> "\n ╚ Expected: #{requestInfos["response"]["expect"]}"
     <> if (not valid) do
       " - FAILURE \n    ╚ Response code: #{response.status_code}\n    ╚ Response body: #{inspect response.body}"
