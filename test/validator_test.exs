@@ -28,7 +28,7 @@ defmodule ValidatorTest do
       |> Map.get("sync")
       |> List.first
 
-    response = %{status_code: 200}
+    response = %{status_code: 200, body: ""}
 
     result = Validator.validateStatusCode(houseInfos, response)
 

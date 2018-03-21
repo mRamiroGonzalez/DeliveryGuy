@@ -13,7 +13,10 @@ defmodule Deliveryguy do
     houseInfos = RequestFormatter.replace_values_in_map(houseInfos, get_state(pid))
 
     response = GenServer.call(pid, houseInfos)
-    responseBody = Poison.decode! response.body
+    responseBody = case response do
+      {:error, reason} -> nil
+      response -> Poison.decode! response.body
+    end
 
     if(Validator.validateStatusCode(houseInfos, response)) do
       entityName = houseInfos["response"]["entityName"]
@@ -66,8 +69,15 @@ defmodule Deliveryguy do
     method = houseInfos["request"]["method"] |> String.downcase |> String.to_atom
 
     Log.info(@m, "#{method} request to #{to}")
-    response = HTTPoison.request!(method, to, body, headers)
-    Log.info(@m, "response code: #{response.status_code}")
-    {:reply, response, state}
+
+    case HTTPoison.request(method, to, body, headers) do
+      {:ok, response} ->
+        Log.info(@m, "Response code: #{response.status_code}")
+        {:reply, response, state}
+
+      {:error, error} ->
+        Log.info(@m, "Error: #{inspect error.reason}")
+        {:reply, {:error, error.reason}, state}
+    end
   end
 end

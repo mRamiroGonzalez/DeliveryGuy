@@ -1,23 +1,37 @@
 defmodule Validator do
 
   def validateStatusCode(requestInfos, response) do
-    valid = requestInfos["response"]["expect"] == response.status_code
+    valid = case response do
+      {:error, reason} -> false
+      _ -> requestInfos["response"]["expect"] == response.status_code
+    end
     print_feedback(requestInfos, response, valid)
+    valid
   end
 
   def print_feedback(requestInfos, response, valid) do
-    if (requestInfos["name"] != nil) do
-      "#{requestInfos["name"]}"
-    else
-      "#{requestInfos["request"]["method"]} #{requestInfos["request"]["to"]}"
-    end
-    <> "\n ╚ Expected: #{requestInfos["response"]["expect"]}"
-    <> if (not valid) do
-      " - FAILURE \n    ╚ Response code: #{response.status_code}\n    ╚ Response body: #{inspect response.body}"
-    else
-      " ✔"
-    end
-    |> IO.puts
-    valid
+    output = "" <>
+      if (requestInfos["name"] != nil) do
+        "#{requestInfos["name"]}"
+      else
+        "#{requestInfos["request"]["method"]} #{requestInfos["request"]["to"]}"
+      end
+
+    output = output <> "\n ╚ Expected: #{requestInfos["response"]["expect"]}"
+
+    output = output <>
+      if (not valid) do
+       " - FAILURE \n    ╚" <>
+        case response do
+          {:error, reason} ->
+            "Error: #{reason}"
+          response ->
+            " Response code: #{response.status_code}\n    ╚ Response body: #{response.body}"
+        end
+      else
+        " ✔"
+      end
+
+    IO.puts output
   end
 end
