@@ -74,7 +74,7 @@
         },
         "response": {
           "expect": 201,
-          "entityName": "event_3."
+          "entityName": "event_3"
         }
       }
     ]
