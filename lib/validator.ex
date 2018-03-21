@@ -2,10 +2,14 @@ defmodule Validator do
 
   def validateStatusCode(requestInfos, response) do
     valid = requestInfos["response"]["expect"] == response.status_code
-    output = "#{requestInfos["request"]["method"]} #{requestInfos["request"]["to"]}"
-    output = output <> "\n ╚ Expected: #{requestInfos["response"]["expect"]}"
+    print_feedback(requestInfos, response, valid)
+  end
+
+  def print_feedback(requestInfos, response, valid) do
     output =
-      output <> if (not valid) do
+      "#{requestInfos["request"]["method"]} #{requestInfos["request"]["to"]}"
+      <> "\n ╚ Expected: #{requestInfos["response"]["expect"]}"
+      <> if (not valid) do
         " - FAILURE \n    ╚ Response code: #{response.status_code}\n    ╚ Response body: #{inspect response.body}"
       else
         " ✔"
@@ -13,6 +17,4 @@ defmodule Validator do
     IO.puts output
     valid
   end
-
-
 end
