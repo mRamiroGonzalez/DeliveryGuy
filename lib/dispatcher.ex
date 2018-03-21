@@ -33,6 +33,7 @@ defmodule Dispatcher do
       |> File.read!
       |> Poison.decode!
       |> Enum.reduce([], fn ({id, route}, acc) ->
+          IO.puts("\nRoute: #{id}")
           codes =
             cond do
               Map.has_key?(route, "async") ->
