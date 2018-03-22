@@ -14,7 +14,7 @@ defmodule Deliveryguy do
 
     response = GenServer.call(pid, houseInfos)
     responseBody = case response do
-      {:error, reason} -> nil
+      {:error, _reason} -> nil
       response -> Poison.decode! response.body
     end
 
