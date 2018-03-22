@@ -20,18 +20,17 @@ defmodule Validator do
     output = output <> "\n ╚ Expected: #{requestInfos["response"]["expect"]}"
 
     output = output <>
-      if (not valid) do
-       " - FAILURE \n    ╚" <>
+      if (valid) do
+        " ✔"
+      else
+        " - FAILURE \n    ╚" <>
         case response do
           {:error, reason} ->
             " Error: #{reason}"
           response ->
             " Response code: #{response.status_code}\n    ╚ Response body: #{response.body}"
         end
-      else
-        " ✔"
       end
-
     IO.puts output
   end
 end
