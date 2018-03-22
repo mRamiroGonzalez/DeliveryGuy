@@ -2,7 +2,7 @@ defmodule Validator do
 
   def validateStatusCode(requestInfos, response) do
     valid = case response do
-      {:error, reason} -> false
+      {:error, _} -> false
       _ -> requestInfos["response"]["expect"] == response.status_code
     end
     print_feedback(requestInfos, response, valid)
@@ -24,7 +24,7 @@ defmodule Validator do
        " - FAILURE \n    ╚" <>
         case response do
           {:error, reason} ->
-            "Error: #{reason}"
+            " Error: #{reason}"
           response ->
             " Response code: #{response.status_code}\n    ╚ Response body: #{response.body}"
         end
