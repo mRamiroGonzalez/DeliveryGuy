@@ -3,6 +3,7 @@
     "sync":
     [
       {
+        "name": "Get first event",
         "request": {
           "method": "GET",
           "to": "http://localhost:3000/events/1"
@@ -15,9 +16,10 @@
       }
     ]
   },
-  "Use event stored in glboals and update it": {
+  "Use event stored in globals and update it": {
     "sync":[
       {
+        "name": "Update first event",
         "request": {
           "method": "PUT",
           "to": "http://localhost:3000/events/{{event.id}}",
@@ -32,17 +34,18 @@
           }
         },
         "response": {
+          "entityName": "updatedEvent",
           "expect": 200
         }
       },
       {
+        "name": "Get updated event",
         "request": {
           "method": "GET",
-          "to": "http://localhost:3000/events/1"
+          "to": "http://localhost:3000/events/{{updatedEvent.id}}"
         },
         "response": {
-          "expect": 200,
-          "entityName": "updatedEvent"
+          "expect": 200
         }
       }
     ]
