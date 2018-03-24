@@ -20,7 +20,7 @@ defmodule Deliveryguy.MixProject do
   end
 
   defp escript do
-    [main_module: Dispatcher]
+    [main_module: ArgsParser]
   end
 
   # Run "mix help deps" to learn about dependencies.
