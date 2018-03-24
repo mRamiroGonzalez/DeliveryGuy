@@ -12,7 +12,11 @@ defmodule RequestFormatter do
       keysArray  = replaceKey |> Enum.at(1) |> String.split(".")                 # ["event", "id"]
 
       newValue = get_value_from_nested_map(keysArray, dataMap)                   # get entity value in state
-      update_infos(updatedJsonString, keyString, newValue)                       # and put it in the request
+      if(newValue != nil) do
+        update_infos(updatedJsonString, keyString, newValue)                     # and put it in the request
+      else
+        updatedJsonString
+      end
     end)
     |> Poison.decode!
   end
@@ -29,7 +33,13 @@ defmodule RequestFormatter do
   end
 
   defp get_value_from_nested_map(keys, map) do
-    Enum.reduce(keys, map, fn(key, currentMap) -> Map.get(currentMap, key) end)
+    Log.debug(@m, "Keys: #{inspect keys}")
+    Log.debug(@m, "map: #{inspect map}")
+    Enum.reduce(keys, map, fn(key, currentMap) ->
+      if (currentMap != nil) do
+        Map.get(currentMap, key)
+      end
+    end)
   end
 
 end
