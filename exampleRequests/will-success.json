@@ -40,14 +40,14 @@
         },
         "response": {
           "expect": 200,
-          "entityName": "updatedEvent"
+          "entityName": "updatedEvent",
+          "type": "global"
         }
       }
     ]
   },
-  "2":{
-    "async":
-    [
+  "2": {
+    "async": [
       {
         "request": {
           "method": "POST",
@@ -64,42 +64,42 @@
         "response": {
           "expect": 201
         }
-      },
+      }
+    ]
+  },
+  "3":{
+    "async":
+    [
       {
+        "name": "Update first event again",
         "request": {
-          "method": "POST",
-          "to": "http://localhost:3000/events",
+          "method": "PUT",
+          "to": "http://localhost:3000/events/{{updatedEvent.id}}",
           "headers": {
             "Content-Type": "application/json"
           },
           "body": {
-            "type": "ANOTHER_EVENT",
-            "startDate": "2030-01-01T05:00Z[UTC]",
-            "endDate": "2030-01-01T03:00Z[UTC]"
+            "type": "PAST_EVENT",
+            "startDate": "2000-01-01T04:00Z[UTC]",
+            "endDate": "2000-01-01T23:59Z[UTC]"
           }
         },
         "response": {
-          "expect": 201
+          "expect": 200
         }
       },
       {
+        "name": "Get first event again and again",
         "request": {
-          "method": "POST",
-          "to": "http://localhost:3000/events",
-          "headers": {
-            "Content-Type": "application/json"
-          },
-          "body": {
-            "type": "ANOTHER_EVENT",
-            "startDate": "2030-01-01T05:00Z[UTC]",
-            "endDate": "2030-01-01T03:00Z[UTC]"
-          }
+          "method": "GET",
+          "to": "http://localhost:3000/events/{{updatedEvent.id}}"
         },
         "response": {
-          "expect": 201
+          "expect": 200,
+          "entityName": "updatedEvent",
+          "type": "global"
         }
       }
     ]
   }
-
 }
