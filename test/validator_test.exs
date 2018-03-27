@@ -1,10 +1,12 @@
 defmodule ValidatorTest do
   use ExUnit.Case
 
-  test "valid_request_from_status" do
-    filename = "test/routes/create-event.json"
+  @testFilesPath "test/routes/validator/"
 
-    houseInfos =
+  test "validate_statusCode_success" do
+    filename = @testFilesPath <> "create-event.json"
+
+    requestInfos =
       filename
       |> File.read!
       |> Poison.decode!
@@ -13,15 +15,13 @@ defmodule ValidatorTest do
 
     response = %{status_code: 201}
 
-    result = Validator.validateStatusCode(houseInfos, response)
-
-    assert result == true
+    assert Validator.validateStatusCode(requestInfos, response)
   end
 
-  test "invalid_request_from_status" do
-    filename = "test/routes/create-event.json"
+  test "validate_statusCode_failure" do
+    filename = @testFilesPath <> "create-event.json"
 
-    houseInfos =
+    requestInfos =
       filename
       |> File.read!
       |> Poison.decode!
@@ -30,8 +30,6 @@ defmodule ValidatorTest do
 
     response = %{status_code: 200, body: ""}
 
-    result = Validator.validateStatusCode(houseInfos, response)
-
-    assert result == false
+    assert not Validator.validateStatusCode(requestInfos, response)
   end
 end

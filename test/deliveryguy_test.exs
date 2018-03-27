@@ -2,11 +2,13 @@ defmodule DeliveryguyTest do
   use ExUnit.Case
   doctest Deliveryguy
 
+  @testFilesPath "test/routes/deliveryGuy/"
+
   test "request_post" do
     {:ok, pid} = GenServer.start_link(Deliveryguy, [])
     {:ok, dispatcherPid} = GenServer.start_link(Dispatcher, [])
 
-    filename = "test/routes/create-event.json"
+    filename = @testFilesPath <> "request-post.json"
 
     routeInfos = Poison.decode! File.read! filename
     houseInfos = List.first routeInfos["sync"]
@@ -23,7 +25,7 @@ defmodule DeliveryguyTest do
     {:ok, pid} = GenServer.start_link(Deliveryguy, [])
     {:ok, dispatcherPid} = GenServer.start_link(Dispatcher, [])
 
-    filename = "test/routes/get-all-events.json"
+    filename = @testFilesPath <> "request-get.json"
 
     routeInfos = Poison.decode! File.read! filename
     houseInfos = List.first routeInfos["sync"]
@@ -50,7 +52,7 @@ defmodule DeliveryguyTest do
     {:ok, pid} = GenServer.start_link(Deliveryguy, [])
     {:ok, dispatcherPid} = GenServer.start_link(Dispatcher, [])
 
-    filename = "test/routes/create-event-fail.json"
+    filename = @testFilesPath <> "request-fail.json"
 
     routeInfos = Poison.decode! File.read! filename
     houseInfos = List.first routeInfos["sync"]
