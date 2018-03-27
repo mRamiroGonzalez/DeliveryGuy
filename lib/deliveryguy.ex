@@ -9,16 +9,28 @@ defmodule Deliveryguy do
     GenServer.call(pid, %{action: :get_state})
   end
 
-  def deliver_house(pid, houseInfos) do
+  def deliver_house(pid, houseInfos, dispatcherPid) do
+    Log.debug(@m, "local state: #{inspect get_state(pid)}")
+    Log.debug(@m, "global state: #{inspect Dispatcher.get_state(dispatcherPid)}")
+
+    houseInfos = RequestFormatter.replace_values_in_map(houseInfos, Dispatcher.get_state(dispatcherPid))
     houseInfos = RequestFormatter.replace_values_in_map(houseInfos, get_state(pid))
 
     response = GenServer.call(pid, houseInfos)
-    responseBody = Poison.decode! response.body
+    responseBody = case response do
+      {:error, _reason} -> nil
+      response -> Poison.decode! response.body
+    end
 
     if(Validator.validateStatusCode(houseInfos, response)) do
       entityName = houseInfos["response"]["entityName"]
+      entityType = houseInfos["response"]["type"]
       if(entityName != nil) do
-        add_entity(pid, entityName, responseBody)
+        if(entityType == "global") do
+          Dispatcher.add_global_entity(dispatcherPid, entityName, responseBody)
+        else
+          add_entity(pid, entityName, responseBody)
+        end
       end
       :true
     else
@@ -30,13 +42,10 @@ defmodule Deliveryguy do
     GenServer.call(pid, %{action: :add, name: name, entity: entity})
   end
 
-  def get_globals(pid) do
-    GenServer.call(pid, %{action: :get_globals})
-  end
 
   # INIT
   def start_link(state, opts) do
-    GenServer.start_link(__MODULE__, state, opts)
+    GenServer.start_link(@m, state, opts)
   end
 
   def init(_opts) do
@@ -55,10 +64,6 @@ defmodule Deliveryguy do
     {:reply, state, state}
   end
 
-  def handle_call(%{action: :get_globals}, _from, state) do
-    {:reply, Globals.get_state(state["globalsPid"]), state}
-  end
-
   def handle_call(houseInfos, _from, state) do
     to = houseInfos["request"]["to"]
     body = houseInfos["request"]["body"] |> Poison.encode!
@@ -66,8 +71,15 @@ defmodule Deliveryguy do
     method = houseInfos["request"]["method"] |> String.downcase |> String.to_atom
 
     Log.info(@m, "#{method} request to #{to}")
-    response = HTTPoison.request!(method, to, body, headers)
-    Log.info(@m, "response code: #{response.status_code}")
-    {:reply, response, state}
+
+    case HTTPoison.request(method, to, body, headers) do
+      {:ok, response} ->
+        Log.info(@m, "Response code: #{response.status_code}")
+        {:reply, response, state}
+
+      {:error, error} ->
+        Log.info(@m, "Error: #{inspect error.reason}")
+        {:reply, {:error, error.reason}, state}
+    end
   end
 end

@@ -46,6 +46,7 @@
     "sync":
     [
       {
+        "name": "Get all events",
         "request": {
           "method": "GET",
           "to": "http://localhost:3000/events",
@@ -59,6 +60,7 @@
         }
       },
       {
+        "name": "Create new event",
         "request": {
           "method": "POST",
           "to": "http://localhost:3000/events",
@@ -74,7 +76,7 @@
         },
         "response": {
           "expect": 201,
-          "entityName": "event_3."
+          "entityName": "event_3"
         }
       }
     ]

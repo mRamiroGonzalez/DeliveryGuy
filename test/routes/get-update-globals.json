@@ -1,0 +1,53 @@
+{
+  "Get first event and store it in globals":{
+    "sync":
+    [
+      {
+        "name": "Get first event",
+        "request": {
+          "method": "GET",
+          "to": "http://localhost:3000/events/1"
+        },
+        "response": {
+          "expect": 200,
+          "entityName": "event",
+          "type": "global"
+        }
+      }
+    ]
+  },
+  "Use event stored in globals and update it": {
+    "sync":[
+      {
+        "name": "Update first event",
+        "request": {
+          "method": "PUT",
+          "to": "http://localhost:3000/events/{{event.id}}",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "type": "YOU_NO_MORE_FIRST_AHAHAHAHA",
+            "startDate": "{{event.endDate}}",
+            "endDate": "2030-01-01T03:00Z[UTC]",
+            "id": 1
+          }
+        },
+        "response": {
+          "entityName": "updatedEvent",
+          "expect": 200
+        }
+      },
+      {
+        "name": "Get updated event",
+        "request": {
+          "method": "GET",
+          "to": "http://localhost:3000/events/{{updatedEvent.id}}"
+        },
+        "response": {
+          "expect": 200
+        }
+      }
+    ]
+  }
+}

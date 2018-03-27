@@ -1,7 +1,18 @@
 {
-  "1":{
+  "Test case where multiple requests will fail":{
     "sync":
     [
+      {
+        "name": "Get first event",
+        "request": {
+          "method": "GET",
+          "to": "http://localhost:3000/events/1"
+        },
+        "response": {
+          "expect": 200,
+          "entityName": "event"
+        }
+      },
       {
         "request": {
           "method": "POST",
@@ -19,6 +30,16 @@
         "response": {
           "expect": 201,
           "entityName": "event_1"
+        }
+      },
+      {
+        "request": {
+          "method": "GET",
+          "to": "http://localhost:1234/events"
+        },
+        "response": {
+          "expect": 200,
+          "entityName": "events"
         }
       }
     ]
