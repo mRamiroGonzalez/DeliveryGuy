@@ -9,7 +9,7 @@ defmodule Validator do
     valid
   end
 
-  def print_feedback(requestInfos, response, valid) do
+  defp print_feedback(requestInfos, response, valid) do
     output = "" <>
       if (requestInfos["name"] != nil) do
         "#{requestInfos["name"]}"

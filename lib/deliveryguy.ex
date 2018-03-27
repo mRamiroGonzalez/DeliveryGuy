@@ -41,6 +41,7 @@ defmodule Deliveryguy do
     entityType = requestInfos["response"]["type"]
 
     Log.info(@m, "New variable: #{entityName} as #{inspect responseBody}")
+
     if(entityName != nil) do
       if(entityType == "global") do
         Dispatcher.add_global_entity(dispatcherPid, entityName, responseBody)
@@ -83,11 +84,8 @@ defmodule Deliveryguy do
     Log.info(@m, "#{String.upcase(houseInfos["request"]["method"])} request to #{to}")
 
     case HTTPoison.request(method, to, body, headers) do
-      {:ok, response} ->
-        {:reply, response, state}
-
-      {:error, error} ->
-        {:reply, {:error, error.reason}, state}
+      {:ok, response} -> {:reply, response, state}
+      {:error, error} -> {:reply, {:error, error.reason}, state}
     end
   end
 end
