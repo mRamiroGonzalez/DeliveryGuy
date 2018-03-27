@@ -13,7 +13,10 @@ defmodule Deliveryguy do
     Log.debug(@m, "local state: #{inspect get_state(pid)}")
     Log.debug(@m, "global state: #{inspect Dispatcher.get_state(dispatcherPid)}")
 
+    Log.info(@m, "Updating values with global variables")
     houseInfos = RequestFormatter.replace_values_in_map(houseInfos, Dispatcher.get_state(dispatcherPid))
+
+    Log.info(@m, "Updating values with route variables")
     houseInfos = RequestFormatter.replace_values_in_map(houseInfos, get_state(pid))
 
     response = GenServer.call(pid, houseInfos)

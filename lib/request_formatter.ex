@@ -7,7 +7,7 @@ defmodule RequestFormatter do
     jsonToUpdate = Poison.encode!(mapToUpdate)                                         # (...) http://localhost:3000/events/{{event.id}} (...)
     elemsToReplace = Regex.scan(@regexPattern, jsonToUpdate)                           # [ ["{{event.id}}", "event.id"], (...) ]
 
-    Log.info(@m, "Starting to replaces values in #{jsonToUpdate}")
+    Log.debug(@m, "Starting to replaces values in #{jsonToUpdate} with dataMap #{inspect dataMap}")
 
     updatedJson =
       Enum.reduce(elemsToReplace, jsonToUpdate, fn(elemToReplace, updatedJson) ->      # ["{{event.id}}", "event.id"]
@@ -16,7 +16,7 @@ defmodule RequestFormatter do
 
         case find_value_from_nested_map(dataMap, pathToNewValue) do
           nil ->
-            Log.error(@m, "Could not find: #{inspect pathToNewValue} in data map: #{inspect dataMap}")
+            Log.debug(@m, "Could not find: #{inspect pathToNewValue} in data map: #{inspect dataMap}")
             updatedJson
           newValue ->
             replace_in_string(updatedJson, valueToReplace, newValue)
