@@ -28,9 +28,12 @@ defmodule Deliveryguy do
   defp update_request_infos(requestInfos, currentRoutePid, dispatcherPid) do
     Log.info(@m, "Updating values with global and route variables")
 
-    requestInfos
-    |> RequestFormatter.replace_values_in_map(Dispatcher.get_state(dispatcherPid))
-    |> RequestFormatter.replace_values_in_map(get_state(currentRoutePid))
+    # global variables are always overridden in case of a conflict
+    globalVariables = Dispatcher.get_state(dispatcherPid)
+    routeVariables = get_state(currentRoutePid)
+    mergedMap = Map.merge(globalVariables, routeVariables)
+
+    RequestFormatter.replace_values_in_map(requestInfos, mergedMap)
   end
 
   defp save_entity(requestInfos, responseBody, currentRoutePid, dispatcherPid) do
