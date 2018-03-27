@@ -5,32 +5,52 @@ defmodule DispatcherTest do
     filename = "test/routes/create-and-get-event.json"
     routesMap = filename |> File.read! |> Poison.decode!
 
-    assert Dispatcher.deliver_route(routesMap)
+    {:ok, pid} = GenServer.start_link(Dispatcher, [])
+
+    assert Dispatcher.deliver_route(routesMap, pid)
   end
 
   test "request_post_multiple_async" do
     filename = "test/routes/create-two-events-async.json"
     routesMap = filename |> File.read! |> Poison.decode!
 
-    assert Dispatcher.deliver_route_async(routesMap)
+    {:ok, pid} = GenServer.start_link(Dispatcher, [])
+
+    assert Dispatcher.deliver_route_async(routesMap, pid)
   end
 
   test "request_chain" do
     filename = "test/routes/multiple-steps-requests.json"
-    assert not Dispatcher.process_routes(filename)
+
+    {:ok, pid} = GenServer.start_link(Dispatcher, [])
+
+    assert not Dispatcher.process_routes(pid, filename)
   end
 
   test "request_chain_value_replacement" do
     filename = "test/routes/get-create.json"
     routesMap = filename |> File.read! |> Poison.decode!
 
-    assert Dispatcher.deliver_route(routesMap)
+    {:ok, pid} = GenServer.start_link(Dispatcher, [])
+
+    assert Dispatcher.deliver_route(routesMap, pid)
   end
 
+  @tag :wip
   test "request_chain_value_field_replacement" do
-    filename = "test/routes/get-create-save-field.json"
+    filename = "test/routes/get-update.json"
     routesMap = filename |> File.read! |> Poison.decode!
 
-    assert Dispatcher.deliver_route(routesMap)
+    {:ok, pid} = GenServer.start_link(Dispatcher, [])
+
+    assert Dispatcher.deliver_route(routesMap, pid)
+  end
+
+  test "request_chain_value_field_replacement_multiple_routes" do
+    filename = "test/routes/get-update-globals.json"
+
+    {:ok, pid} = GenServer.start_link(Dispatcher, [])
+
+    assert Dispatcher.process_routes(pid, filename)
   end
 end
