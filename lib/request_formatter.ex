@@ -4,28 +4,28 @@ defmodule RequestFormatter do
   @regexPattern ~r/\{\{(.*?)\}\}/   # everything between {{ and }}
 
   def replace_values_in_map(mapToUpdate, dataMap) do
-    jsonToUpdate = Poison.encode!(mapToUpdate)                                         # (...) http://localhost:3000/events/{{event.id}} (...)
-    elemsToReplace = Regex.scan(@regexPattern, jsonToUpdate)                           # [ ["{{event.id}}", "event.id"], (...) ]
+    stringToUpdate = Poison.encode!(mapToUpdate)                                       # (...) http://localhost:3000/events/{{event.id}} (...)
+    elemsToReplace = Regex.scan(@regexPattern, stringToUpdate)                         # [ ["{{event.id}}", "event.id"], (...) ]
 
-    Log.debug(@m, "Starting to replaces values in #{jsonToUpdate} with dataMap #{inspect dataMap}")
+    Log.debug(@m, "Starting to replaces values in #{stringToUpdate} with dataMap #{inspect dataMap}")
 
-    updatedJson =
-      Enum.reduce(elemsToReplace, jsonToUpdate, fn(elemToReplace, updatedJson) ->      # ["{{event.id}}", "event.id"]
+    updatedString =
+      Enum.reduce(elemsToReplace, stringToUpdate, fn(elemToReplace, updatedString) ->  # ["{{event.id}}", "event.id"]
         valueToReplace = elemToReplace |> Enum.at(0)                                   # "{{event.id}}"
         pathToNewValue = elemToReplace |> Enum.at(1) |> String.split(".")              # ["event", "id"]
 
         case find_value_from_nested_map(dataMap, pathToNewValue) do
           nil ->
             Log.debug(@m, "Could not find: #{inspect pathToNewValue} in data map: #{inspect dataMap}")
-            updatedJson
+            updatedString
           newValue ->
-            replace_in_string(updatedJson, valueToReplace, newValue)
+            replace_in_string(updatedString, valueToReplace, newValue)
         end
       end)
 
-    Log.info(@m, "Done: #{updatedJson}")
+    Log.info(@m, "Done: #{updatedString}")
 
-    Poison.decode! updatedJson
+    Poison.decode! updatedString
   end
 
   defp replace_in_string(string, key, value) when is_map(value) do
