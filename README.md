@@ -25,7 +25,7 @@ json-server --watch test/db.json
 - handle errors (currently throws an exception)
 - add tests with failure cases
 - add more ways to validate the response (only response code now)
-- ~~handle conenexion errors~~
+- ~~handle connexion errors~~
 - handle timeout when the server does not respond
 - ~~store variable between routes / groups~~
 - ~~add feedback to know which request failed~~
