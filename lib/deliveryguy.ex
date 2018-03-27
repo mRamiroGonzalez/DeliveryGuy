@@ -80,15 +80,13 @@ defmodule Deliveryguy do
     headers = houseInfos["request"]["headers"] || []
     method = houseInfos["request"]["method"] |> String.downcase |> String.to_atom
 
-    Log.info(@m, "#{method} request to #{to}")
+    Log.info(@m, "#{String.upcase(houseInfos["request"]["method"])} request to #{to}")
 
     case HTTPoison.request(method, to, body, headers) do
       {:ok, response} ->
-        Log.info(@m, "Response code: #{response.status_code}")
         {:reply, response, state}
 
       {:error, error} ->
-        Log.info(@m, "Error: #{inspect error.reason}")
         {:reply, {:error, error.reason}, state}
     end
   end
