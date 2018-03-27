@@ -36,7 +36,6 @@ defmodule DispatcherTest do
     assert Dispatcher.deliver_route(routesMap, pid)
   end
 
-  @tag :wip
   test "request_chain_value_field_replacement" do
     filename = "test/routes/get-update.json"
     routesMap = filename |> File.read! |> Poison.decode!
