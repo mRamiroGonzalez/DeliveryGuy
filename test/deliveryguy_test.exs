@@ -12,7 +12,7 @@ defmodule DeliveryguyTest do
     houseInfos = List.first routeInfos["sync"]
     responseType = houseInfos["response"]["entityName"]
 
-    success = Deliveryguy.deliver_house(pid, houseInfos, dispatcherPid)
+    success = Deliveryguy.make_request(pid, houseInfos, dispatcherPid)
     state = Deliveryguy.get_state(pid)
 
     assert state[responseType] != nil
@@ -29,7 +29,7 @@ defmodule DeliveryguyTest do
     houseInfos = List.first routeInfos["sync"]
     responseType = List.first(routeInfos["sync"])["response"]["entityName"]
 
-    success = Deliveryguy.deliver_house(pid, houseInfos, dispatcherPid)
+    success = Deliveryguy.make_request(pid, houseInfos, dispatcherPid)
     state = Deliveryguy.get_state(pid)
 
     assert success
@@ -55,7 +55,7 @@ defmodule DeliveryguyTest do
     routeInfos = Poison.decode! File.read! filename
     houseInfos = List.first routeInfos["sync"]
 
-    success = Deliveryguy.deliver_house(pid, houseInfos, dispatcherPid)
+    success = Deliveryguy.make_request(pid, houseInfos, dispatcherPid)
     state = Deliveryguy.get_state(pid)
 
     assert state == %{}
