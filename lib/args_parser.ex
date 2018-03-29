@@ -27,7 +27,7 @@ defmodule ArgsParser do
           IO.puts "Command not supported"
           :false
       end
-    if (result), do: 1, else: 0
+    if (result), do: 0, else: -1
   end
 
 end
