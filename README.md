@@ -19,6 +19,10 @@ json-server --watch test/db.json
 # Or use your own server
 ./deliveryguy --source yourOwnRequests.json
 
+# Only print the end result:
+./deliveryguy --source exampleRequests/will-fail.json | tail -1
+
+
 ```
 
 ## TODO:
