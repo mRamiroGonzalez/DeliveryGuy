@@ -2,7 +2,7 @@
 
 Makes requests based on a JSON file. See my blog page [here](https://mramirogonzalez.github.io/Using-DeliveryGuy/) for more infos.
 
-Returns 1 when all the expected response codes match.
+Returns 0 when all the expected response codes match, -1 otherwise
 
 ## Installation
 You need to have Erlang & Elixir installed
