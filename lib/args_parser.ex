@@ -4,7 +4,6 @@ defmodule ArgsParser do
     args                    # mix escript.build
     |> parse_args           # ./deliveryguy --source "test/routes/multiple-steps-requests.json"
     |> response
-    |> IO.puts()
   end
 
   defp parse_args(args) do
