@@ -1,9 +1,12 @@
 defmodule ArgsParser do
 
   def main(args \\ []) do
-    args                    # mix escript.build
-    |> parse_args           # ./deliveryguy --source "test/routes/multiple-steps-requests.json"
-    |> response
+    exitCode =
+      args                    # mix escript.build
+      |> parse_args           # ./deliveryguy --source "test/routes/multiple-steps-requests.json"
+      |> response
+    IO.puts(exitCode)
+    exitCode
   end
 
   defp parse_args(args) do
