@@ -1,8 +1,13 @@
 defmodule DeliveryguyTest do
   use ExUnit.Case
-  doctest Deliveryguy
 
   @testFilesPath "test/routes/deliveryGuy/"
+
+  @tag :wip
+  test "it uses mock in tests" do
+    result = Httpclient.send(%{method: "test", to: "", body: "", headers: ""})
+    assert result["it"] == "works"
+  end
 
   test "request_post" do
     {:ok, pid} = GenServer.start_link(Deliveryguy, [])

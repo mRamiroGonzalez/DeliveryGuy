@@ -83,7 +83,7 @@ defmodule Deliveryguy do
 
     Log.info(@m, "#{String.upcase(houseInfos["request"]["method"])} request to #{to}")
 
-    case HTTPoison.request(method, to, body, headers) do
+    case Httpclient.send(%{to: to, body: body, headers: headers, method: method}) do
       {:ok, response} -> {:reply, response, state}
       {:error, error} -> {:reply, {:error, error.reason}, state}
     end
