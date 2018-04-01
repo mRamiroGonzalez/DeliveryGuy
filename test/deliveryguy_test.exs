@@ -16,7 +16,6 @@ defmodule DeliveryguyTest do
 
     routeInfos = Poison.decode! File.read! filename
     houseInfos = List.first routeInfos["sync"]
-    responseType = houseInfos["response"]["entityName"]
 
     success = Deliveryguy.make_request(pid, houseInfos, dispatcherPid)
 
