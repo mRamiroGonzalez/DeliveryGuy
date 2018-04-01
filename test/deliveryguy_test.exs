@@ -3,7 +3,6 @@ defmodule DeliveryguyTest do
 
   @testFilesPath "test/routes/deliveryGuy/"
 
-  @tag :wip
   test "it uses mock in tests" do
     result = Httpclient.send(%{method: "test", to: "", body: "", headers: ""})
     assert result["it"] == "works"
@@ -20,9 +19,7 @@ defmodule DeliveryguyTest do
     responseType = houseInfos["response"]["entityName"]
 
     success = Deliveryguy.make_request(pid, houseInfos, dispatcherPid)
-    state = Deliveryguy.get_state(pid)
 
-    assert state[responseType] != nil
     assert success
   end
 
