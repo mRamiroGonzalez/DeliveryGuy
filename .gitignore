@@ -23,4 +23,4 @@ erl_crash.dump
 deliveryguy-*.tar
 
 .idea
-/test/db.json
+deliveryguy
