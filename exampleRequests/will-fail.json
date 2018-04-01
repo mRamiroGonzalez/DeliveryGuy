@@ -1,45 +1,16 @@
 {
-  "Test case where multiple requests will fail":{
+  "Test case where the request will fail":{
     "sync":
     [
       {
-        "name": "Get first event",
+        "name": "Get first post",
         "request": {
           "method": "GET",
-          "to": "http://localhost:3000/events/1"
+          "to": "http://localhost:3000/posts/1"
         },
         "response": {
-          "expect": 200,
-          "entityName": "event"
-        }
-      },
-      {
-        "request": {
-          "method": "POST",
-          "to": "http://localhost:3000/events/fail",
-          "headers": {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXNzYWdlIjoiWW91IGp1c3QgbG9zdCBUaGUgR2FtZS4ifQ.0EMiiJY3saBQNFap35d4ZeW4ZRYLVZnn4HNftomn4js"
-          },
-          "body": {
-            "type": "EVENT",
-            "startDate": "2030-01-01T01:00Z[UTC]",
-            "endDate": "2030-01-01T23:59Z[UTC]"
-          }
-        },
-        "response": {
-          "expect": 201,
-          "entityName": "event_1"
-        }
-      },
-      {
-        "request": {
-          "method": "GET",
-          "to": "http://localhost:1234/events"
-        },
-        "response": {
-          "expect": 200,
-          "entityName": "events"
+          "expect": 123,
+          "entityName": "post"
         }
       }
     ]

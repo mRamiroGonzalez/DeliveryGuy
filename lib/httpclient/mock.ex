@@ -3,7 +3,9 @@ defmodule Httpclient.Mock do
   @behaviour Httpclient.Behaviour
   @url "http://localhost:3000/"
 
-  @all_events "[{\"id\": 1, \"data\": \"test\"}, {\"id\": 2, \"data\": \"test2\"}]"
+  @first_post "{\"id\": 1, \"data\": \"test\"}"
+  @updated_post "{\"id\": 1, \"data\": \"updated data\"}"
+  @all_posts "[{\"id\": 1, \"data\": \"test\"}, {\"id\": 2, \"data\": \"test2\"}]"
 
   def send(%{method: "test", to: _to, body: _body, headers: _headers}) do
     %{"it" => "works"}
@@ -12,16 +14,23 @@ defmodule Httpclient.Mock do
   def send(%{method: :get, to: to, body: _body, headers: _headers}) do
     case to do
       @url <> "posts" ->
-        response = %{status_code: 200, body: @all_events}
-        {:ok, response}
+        {:ok, %{status_code: 200, body: @all_posts}}
+      @url <> "posts/1" ->
+        {:ok, %{status_code: 200, body: @first_post}}
     end
   end
 
   def send(%{method: :post, to: to, body: _body, headers: _headers}) do
     case to do
       @url <> "posts" ->
-        response = %{status_code: 201, body: "{}"}
-        {:ok, response}
+        {:ok, %{status_code: 201, body: @first_post}}
+    end
+  end
+
+  def send(%{method: :put, to: to, body: _body, headers: _headers}) do
+    case to do
+      @url <> "posts/1" ->
+        {:ok, %{status_code: 201, body: @updated_post}}
     end
   end
 end
