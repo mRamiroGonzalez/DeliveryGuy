@@ -5,39 +5,37 @@
       {
         "request": {
           "method": "POST",
-          "to": "http://localhost:3000/events",
+          "to": "http://localhost:3000/posts",
           "headers": {
             "Content-Type": "application/json",
             "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXNzYWdlIjoiWW91IGp1c3QgbG9zdCBUaGUgR2FtZS4ifQ.0EMiiJY3saBQNFap35d4ZeW4ZRYLVZnn4HNftomn4js"
           },
           "body": {
-            "type": "EVENT",
-            "startDate": "2030-01-01T01:00Z[UTC]",
-            "endDate": "2030-01-01T23:59Z[UTC]"
+            "type": "post",
+            "data": "test"
           }
         },
         "response": {
           "expect": 201,
-          "entityName": "event_1"
+          "entityName": "post_1"
         }
       },
       {
         "request": {
           "method": "POST",
-          "to": "http://localhost:3000/events",
+          "to": "http://localhost:3000/posts",
           "headers": {
             "Content-Type": "application/json",
             "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXNzYWdlIjoiWW91IGp1c3QgbG9zdCBUaGUgR2FtZS4ifQ.0EMiiJY3saBQNFap35d4ZeW4ZRYLVZnn4HNftomn4js"
           },
           "body": {
-            "type": "ANOTHER_EVENT",
-            "startDate": "2030-01-01T02:00Z[UTC]",
-            "endDate": "2030-01-01T03:00Z[UTC]"
+            "type": "post",
+            "data": "test 2"
           }
         },
         "response": {
           "expect": 201,
-          "entityName": "event_2"
+          "entityName": "post_2"
         }
       }
     ]
@@ -45,17 +43,17 @@
   "2": {
     "sync": [
       {
-        "name": "Get all events",
+        "name": "Get all posts",
         "request": {
           "method": "GET",
-          "to": "http://localhost:3000/events",
+          "to": "http://localhost:3000/posts",
           "headers": {
             "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXNzYWdlIjoiWW91IGp1c3QgbG9zdCBUaGUgR2FtZS4ifQ.0EMiiJY3saBQNFap35d4ZeW4ZRYLVZnn4HNftomn4js"
           }
         },
         "response": {
           "expect": 200,
-          "entityName": "events"
+          "entityName": "posts"
         }
       }
     ]

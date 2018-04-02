@@ -1,48 +1,47 @@
 {
-  "Get first event and store it in globals":{
+  "Get first post and store it in globals":{
     "sync":
     [
       {
-        "name": "Get first event",
+        "name": "Get first post",
         "request": {
           "method": "GET",
-          "to": "http://localhost:3000/events/1"
+          "to": "http://localhost:3000/posts/1"
         },
         "response": {
           "expect": 200,
-          "entityName": "event",
+          "entityName": "post",
           "type": "global"
         }
       }
     ]
   },
-  "Use event stored in globals and update it": {
+  "Use post stored in globals and update it": {
     "sync":[
       {
-        "name": "Update first event",
+        "name": "Update first post",
         "request": {
           "method": "PUT",
-          "to": "http://localhost:3000/events/{{event.id}}",
+          "to": "http://localhost:3000/posts/{{post.id}}",
           "headers": {
             "Content-Type": "application/json"
           },
           "body": {
-            "type": "YOU_NO_MORE_FIRST_AHAHAHAHA",
-            "startDate": "{{event.endDate}}",
-            "endDate": "2030-01-01T03:00Z[UTC]",
+            "type": "{{post.type}}",
+            "data": "updated data",
             "id": 1
           }
         },
         "response": {
-          "entityName": "updatedEvent",
+          "entityName": "updated_post",
           "expect": 200
         }
       },
       {
-        "name": "Get updated event",
+        "name": "Get updated post",
         "request": {
           "method": "GET",
-          "to": "http://localhost:3000/events/{{updatedEvent.id}}"
+          "to": "http://localhost:3000/posts/{{updated_post.id}}"
         },
         "response": {
           "expect": 200
