@@ -1,9 +1,11 @@
 defmodule Validator do
 
+  import Request
+
   def validateStatusCode(requestInfos, response) do
     valid = case response do
       {:error, _} -> false
-      _ -> requestInfos["response"]["expect"] == response.status_code
+      _ -> get_from_request(requestInfos, :responseExpect) == response.status_code
     end
     print_feedback(requestInfos, response, valid)
     valid
@@ -11,13 +13,13 @@ defmodule Validator do
 
   defp print_feedback(requestInfos, response, valid) do
     output = "" <>
-      if (requestInfos["name"] != nil) do
-        "#{requestInfos["name"]}"
+      if (get_from_request(requestInfos, :name) != nil) do
+        "#{get_from_request(requestInfos, :name)}"
       else
-        "#{requestInfos["request"]["method"]} #{requestInfos["request"]["to"]}"
+        "#{get_from_request(requestInfos, :requestMethod)} #{get_from_request(requestInfos, :requestTo)}"
       end
 
-    output = output <> "\n ╚ Expected: #{requestInfos["response"]["expect"]}"
+    output = output <> "\n ╚ Expected: #{get_from_request(requestInfos, :responseExpect)}"
 
     output = output <>
       if (valid) do

@@ -1,6 +1,7 @@
 defmodule Deliveryguy do
 
   use GenServer
+  import Request
 
   @m __MODULE__
 
@@ -37,10 +38,10 @@ defmodule Deliveryguy do
   end
 
   defp save_entity(requestInfos, responseBody, currentRoutePid, dispatcherPid) do
-    entityName = requestInfos["response"]["entityName"]
-    entityType = requestInfos["response"]["type"]
+    entityName = get_from_request(requestInfos, :responseEntityName)
+    entityType = get_from_request(requestInfos, :responseType)
 
-    Log.info(@m, "New variable: #{entityName} as #{inspect responseBody}")
+    Log.info(@m, "New variable: #{entityName}(#{entityType}) as #{inspect responseBody}")
 
     if(entityName != nil) do
       if(entityType == "global") do
@@ -75,13 +76,13 @@ defmodule Deliveryguy do
     {:reply, state, state}
   end
 
-  def handle_call(houseInfos, _from, state) do
-    to = houseInfos["request"]["to"]
-    body = houseInfos["request"]["body"] |> Poison.encode!
-    headers = houseInfos["request"]["headers"] || []
-    method = houseInfos["request"]["method"] |> String.downcase |> String.to_atom
+  def handle_call(requestInfos, _from, state) do
+    to = get_from_request(requestInfos, :requestTo)
+    body = get_from_request(requestInfos, :requestBody) |> Poison.encode!
+    headers = get_from_request(requestInfos, :requestHeaders) || []
+    method = get_from_request(requestInfos, :requestMethod) |> String.downcase |> String.to_atom
 
-    Log.info(@m, "#{String.upcase(houseInfos["request"]["method"])} request to #{to}")
+    Log.info(@m, "#{String.upcase(get_from_request(requestInfos, :requestMethod))} request to #{to}")
 
     case Httpclient.send(%{to: to, body: body, headers: headers, method: method}) do
       {:ok, response} -> {:reply, response, state}
