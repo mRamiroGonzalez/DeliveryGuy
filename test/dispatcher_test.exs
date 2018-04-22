@@ -1,8 +1,10 @@
 defmodule DispatcherTest do
   use ExUnit.Case
 
-  test "request_multiple" do
-    filename = "test/routes/create-and-get-event.json"
+  @testFilesPath "test/routes/dispatcher/"
+
+  test "multipleRequests_sync" do
+    filename = @testFilesPath <> "multipleRequests-sync.json"
     routesMap = filename |> File.read! |> Poison.decode!
 
     {:ok, pid} = GenServer.start_link(Dispatcher, [])
@@ -10,8 +12,8 @@ defmodule DispatcherTest do
     assert Dispatcher.deliver_route(routesMap, pid)
   end
 
-  test "request_post_multiple_async" do
-    filename = "test/routes/create-two-events-async.json"
+  test "multipleRequests_async" do
+    filename = @testFilesPath <> "multipleRequests-async.json"
     routesMap = filename |> File.read! |> Poison.decode!
 
     {:ok, pid} = GenServer.start_link(Dispatcher, [])
@@ -19,16 +21,16 @@ defmodule DispatcherTest do
     assert Dispatcher.deliver_route_async(routesMap, pid)
   end
 
-  test "request_chain" do
-    filename = "test/routes/multiple-steps-requests.json"
+  test "multipleRequests_multipleRoutes" do
+    filename = @testFilesPath <> "multipleRequests-multipleRoutes.json"
 
     {:ok, pid} = GenServer.start_link(Dispatcher, [])
 
-    assert not Dispatcher.process_routes(pid, filename)
+    assert Dispatcher.process_routes(pid, filename)
   end
 
-  test "request_chain_value_replacement" do
-    filename = "test/routes/get-create.json"
+  test "multipleRequests_replaceBody" do
+    filename = @testFilesPath <> "multipleRequests-replaceBody.json"
     routesMap = filename |> File.read! |> Poison.decode!
 
     {:ok, pid} = GenServer.start_link(Dispatcher, [])
@@ -36,9 +38,8 @@ defmodule DispatcherTest do
     assert Dispatcher.deliver_route(routesMap, pid)
   end
 
-  @tag :wip
-  test "request_chain_value_field_replacement" do
-    filename = "test/routes/get-update.json"
+  test "multipleRequests_replaceValues" do
+    filename = @testFilesPath <> "multipleRequests-replaceValues.json"
     routesMap = filename |> File.read! |> Poison.decode!
 
     {:ok, pid} = GenServer.start_link(Dispatcher, [])
@@ -46,8 +47,8 @@ defmodule DispatcherTest do
     assert Dispatcher.deliver_route(routesMap, pid)
   end
 
-  test "request_chain_value_field_replacement_multiple_routes" do
-    filename = "test/routes/get-update-globals.json"
+  test "multipleRequests_multipleRoutes_replaceValues_fromGlobals" do
+    filename = @testFilesPath <> "multipleRequests-multipleRoutes-replaceValues-fromGlobals.json"
 
     {:ok, pid} = GenServer.start_link(Dispatcher, [])
 

@@ -48,7 +48,7 @@ defmodule Dispatcher do
     {:ok, pid} = GenServer.start_link(Deliveryguy, [])
 
     codes = Enum.reduce route["sync"], [], fn (houseInfos, acc) ->
-      code = Deliveryguy.deliver_house(pid, houseInfos, dispatcherPid)
+      code = Deliveryguy.make_request(pid, houseInfos, dispatcherPid)
       [code | acc]
     end
     Enum.reverse(codes)
@@ -58,7 +58,7 @@ defmodule Dispatcher do
     {:ok, pid} = GenServer.start_link(Deliveryguy, [])
 
     route["async"]
-    |> Enum.map(&Task.async(fn -> Deliveryguy.deliver_house(pid, &1, dispatcherPid) end))
+    |> Enum.map(&Task.async(fn -> Deliveryguy.make_request(pid, &1, dispatcherPid) end))
     |> Enum.map(&Task.await/1)
   end
 

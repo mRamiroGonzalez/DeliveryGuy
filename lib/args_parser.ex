@@ -1,10 +1,12 @@
 defmodule ArgsParser do
 
   def main(args \\ []) do
-    args                    # mix escript.build
-    |> parse_args           # ./deliveryguy --source "test/routes/multiple-steps-requests.json"
-    |> response
-    |> IO.puts()
+    exitCode =
+      args                    # mix escript.build
+      |> parse_args           # ./deliveryguy --source "test/routes/multiple-steps-requests.json"
+      |> response
+    IO.puts(exitCode)
+    exitCode
   end
 
   defp parse_args(args) do
@@ -25,7 +27,7 @@ defmodule ArgsParser do
           IO.puts "Command not supported"
           :false
       end
-    if (result), do: 1, else: 0
+    if (result), do: 0, else: -1
   end
 
 end

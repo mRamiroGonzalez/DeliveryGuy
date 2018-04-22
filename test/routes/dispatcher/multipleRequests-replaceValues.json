@@ -4,24 +4,23 @@
     {
       "request": {
         "method": "GET",
-        "to": "http://localhost:3000/events/1"
+        "to": "http://localhost:3000/posts/1"
       },
       "response": {
         "expect": 200,
-        "entityName": "event"
+        "entityName": "post"
       }
     },
     {
       "request": {
         "method": "PUT",
-        "to": "http://localhost:3000/events/{{event.id}}",
+        "to": "http://localhost:3000/posts/{{post.id}}",
         "headers": {
           "Content-Type": "application/json"
         },
         "body": {
-          "type": "YOU_NO_MORE_FIRST_AHAHAHAHA",
-          "startDate": "{{event.endDate}}",
-          "endDate": "2030-01-01T03:00Z[UTC]",
+          "type": "post",
+          "data": "test 2",
           "id": 1
         }
       },
@@ -32,11 +31,11 @@
     {
       "request": {
         "method": "GET",
-        "to": "http://localhost:3000/events/1"
+        "to": "http://localhost:3000/posts/1"
       },
       "response": {
         "expect": 200,
-        "entityName": "updatedEvent"
+        "entityName": "updatedpost"
       }
     }
   ]

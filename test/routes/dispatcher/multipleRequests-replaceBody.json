@@ -4,25 +4,25 @@
     {
       "request": {
         "method": "GET",
-        "to": "http://localhost:3000/events/1"
+        "to": "http://localhost:3000/posts/1"
       },
       "response": {
         "expect": 200,
-        "entityName": "event"
+        "entityName": "post"
       }
     },
     {
       "request": {
         "method": "PUT",
-        "to": "http://localhost:3000/events/1",
+        "to": "http://localhost:3000/posts/1",
         "headers": {
           "Content-Type": "application/json"
         },
-        "body": "{{event}}"
+        "body": "{{post}}"
       },
       "response": {
         "expect": 200,
-        "entityName": "updatedEvent"
+        "entityName": "updatedpost"
       }
     }
   ]

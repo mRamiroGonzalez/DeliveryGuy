@@ -3,101 +3,14 @@
     "sync":
     [
       {
-        "name": "Get first event",
+        "name": "Get first post",
         "request": {
           "method": "GET",
-          "to": "http://localhost:3000/events/1"
+          "to": "http://localhost:3000/posts/1"
         },
         "response": {
           "expect": 200,
-          "entityName": "event"
-        }
-      },
-      {
-        "name": "Update first event",
-        "request": {
-          "method": "PUT",
-          "to": "http://localhost:3000/events/{{event.id}}",
-          "headers": {
-            "Content-Type": "application/json"
-          },
-          "body": {
-            "type": "YOU_NO_MORE_FIRST_AHAHAHAHA",
-            "startDate": "{{event.endDate}}",
-            "endDate": "2030-01-01T03:00Z[UTC]",
-            "id": 1
-          }
-        },
-        "response": {
-          "expect": 200
-        }
-      },
-      {
-        "name": "Get first event again",
-        "request": {
-          "method": "GET",
-          "to": "http://localhost:3000/events/1"
-        },
-        "response": {
-          "expect": 200,
-          "entityName": "updatedEvent",
-          "type": "global"
-        }
-      }
-    ]
-  },
-  "2": {
-    "async": [
-      {
-        "request": {
-          "method": "POST",
-          "to": "http://localhost:3000/events",
-          "headers": {
-            "Content-Type": "application/json"
-          },
-          "body": {
-            "type": "EVENT",
-            "startDate": "2030-01-01T04:00Z[UTC]",
-            "endDate": "2030-01-01T23:59Z[UTC]"
-          }
-        },
-        "response": {
-          "expect": 201
-        }
-      }
-    ]
-  },
-  "3":{
-    "async":
-    [
-      {
-        "name": "Update first event again",
-        "request": {
-          "method": "PUT",
-          "to": "http://localhost:3000/events/{{updatedEvent.id}}",
-          "headers": {
-            "Content-Type": "application/json"
-          },
-          "body": {
-            "type": "PAST_EVENT",
-            "startDate": "2000-01-01T04:00Z[UTC]",
-            "endDate": "2000-01-01T23:59Z[UTC]"
-          }
-        },
-        "response": {
-          "expect": 200
-        }
-      },
-      {
-        "name": "Get first event again and again",
-        "request": {
-          "method": "GET",
-          "to": "http://localhost:3000/events/{{updatedEvent.id}}"
-        },
-        "response": {
-          "expect": 200,
-          "entityName": "updatedEvent",
-          "type": "global"
+          "entityName": "post"
         }
       }
     ]

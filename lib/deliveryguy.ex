@@ -9,32 +9,45 @@ defmodule Deliveryguy do
     GenServer.call(pid, %{action: :get_state})
   end
 
-  def deliver_house(pid, houseInfos, dispatcherPid) do
-    Log.debug(@m, "local state: #{inspect get_state(pid)}")
-    Log.debug(@m, "global state: #{inspect Dispatcher.get_state(dispatcherPid)}")
+  def make_request(pid, requestInfos, dispatcherPid) do
+    updatedRequestInfos = update_request_infos(requestInfos, pid, dispatcherPid)
 
-    houseInfos = RequestFormatter.replace_values_in_map(houseInfos, Dispatcher.get_state(dispatcherPid))
-    houseInfos = RequestFormatter.replace_values_in_map(houseInfos, get_state(pid))
-
-    response = GenServer.call(pid, houseInfos)
-    responseBody = case response do
+    case GenServer.call(pid, updatedRequestInfos) do
       {:error, _reason} -> nil
-      response -> Poison.decode! response.body
-    end
-
-    if(Validator.validateStatusCode(houseInfos, response)) do
-      entityName = houseInfos["response"]["entityName"]
-      entityType = houseInfos["response"]["type"]
-      if(entityName != nil) do
-        if(entityType == "global") do
-          Dispatcher.add_global_entity(dispatcherPid, entityName, responseBody)
+      response ->
+        responseBody = Poison.decode! response.body
+        if(Validator.validateStatusCode(updatedRequestInfos, response)) do
+          save_entity(requestInfos, responseBody, pid, dispatcherPid)
+          :true
         else
-          add_entity(pid, entityName, responseBody)
+          :false
         end
+    end
+  end
+
+  defp update_request_infos(requestInfos, currentRoutePid, dispatcherPid) do
+    Log.info(@m, "Updating values with global and route variables")
+
+    # global variables are always overridden in case of a conflict
+    globalVariables = Dispatcher.get_state(dispatcherPid)
+    routeVariables = get_state(currentRoutePid)
+    mergedMap = Map.merge(globalVariables, routeVariables)
+
+    RequestFormatter.replace_values_in_map(requestInfos, mergedMap)
+  end
+
+  defp save_entity(requestInfos, responseBody, currentRoutePid, dispatcherPid) do
+    entityName = requestInfos["response"]["entityName"]
+    entityType = requestInfos["response"]["type"]
+
+    Log.info(@m, "New variable: #{entityName} as #{inspect responseBody}")
+
+    if(entityName != nil) do
+      if(entityType == "global") do
+        Dispatcher.add_global_entity(dispatcherPid, entityName, responseBody)
+      else
+        add_entity(currentRoutePid, entityName, responseBody)
       end
-      :true
-    else
-      :false
     end
   end
 
@@ -55,8 +68,6 @@ defmodule Deliveryguy do
 
   # SERVER
   def handle_call(%{action: :add, name: name, entity: entity}, _from, state) do
-    Log.info(@m, "adding entity: #{name}")
-    Log.debug(@m, "entity: #{inspect entity}")
     {:reply, :ok, Map.put(state, name, entity)}
   end
 
@@ -70,16 +81,11 @@ defmodule Deliveryguy do
     headers = houseInfos["request"]["headers"] || []
     method = houseInfos["request"]["method"] |> String.downcase |> String.to_atom
 
-    Log.info(@m, "#{method} request to #{to}")
+    Log.info(@m, "#{String.upcase(houseInfos["request"]["method"])} request to #{to}")
 
-    case HTTPoison.request(method, to, body, headers) do
-      {:ok, response} ->
-        Log.info(@m, "Response code: #{response.status_code}")
-        {:reply, response, state}
-
-      {:error, error} ->
-        Log.info(@m, "Error: #{inspect error.reason}")
-        {:reply, {:error, error.reason}, state}
+    case Httpclient.send(%{to: to, body: body, headers: headers, method: method}) do
+      {:ok, response} -> {:reply, response, state}
+      {:error, error} -> {:reply, {:error, error.reason}, state}
     end
   end
 end
