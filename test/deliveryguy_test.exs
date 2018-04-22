@@ -1,8 +1,12 @@
 defmodule DeliveryguyTest do
   use ExUnit.Case
-  doctest Deliveryguy
 
   @testFilesPath "test/routes/deliveryGuy/"
+
+  test "it uses mock in tests" do
+    result = Httpclient.send(%{method: "test", to: "", body: "", headers: ""})
+    assert result["it"] == "works"
+  end
 
   test "request_post" do
     {:ok, pid} = GenServer.start_link(Deliveryguy, [])
@@ -12,12 +16,9 @@ defmodule DeliveryguyTest do
 
     routeInfos = Poison.decode! File.read! filename
     houseInfos = List.first routeInfos["sync"]
-    responseType = houseInfos["response"]["entityName"]
 
     success = Deliveryguy.make_request(pid, houseInfos, dispatcherPid)
-    state = Deliveryguy.get_state(pid)
 
-    assert state[responseType] != nil
     assert success
   end
 

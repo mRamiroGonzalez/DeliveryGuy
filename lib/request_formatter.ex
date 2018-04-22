@@ -7,7 +7,7 @@ defmodule RequestFormatter do
     stringToUpdate = Poison.encode!(mapToUpdate)                                       # (...) http://localhost:3000/events/{{event.id}} (...)
     elemsToReplace = Regex.scan(@regexPattern, stringToUpdate)                         # [ ["{{event.id}}", "event.id"], (...) ]
 
-    Log.debug(@m, "Starting to replaces values in #{stringToUpdate} with dataMap #{inspect dataMap}")
+    Log.debug(@m, "Starting to replace values in #{stringToUpdate} with dataMap #{inspect dataMap}")
 
     updatedString =
       Enum.reduce(elemsToReplace, stringToUpdate, fn(elemToReplace, updatedString) ->  # ["{{event.id}}", "event.id"]

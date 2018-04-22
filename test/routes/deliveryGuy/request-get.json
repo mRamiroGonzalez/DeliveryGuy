@@ -4,14 +4,14 @@
     {
       "request": {
         "method": "GET",
-        "to": "http://localhost:3000/events",
+        "to": "http://localhost:3000/posts",
         "headers": {
           "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXNzYWdlIjoiWW91IGp1c3QgbG9zdCBUaGUgR2FtZS4ifQ.0EMiiJY3saBQNFap35d4ZeW4ZRYLVZnn4HNftomn4js"
         }
       },
       "response": {
         "expect": 200,
-        "entityName": "events"
+        "entityName": "posts"
       }
     }
   ]
